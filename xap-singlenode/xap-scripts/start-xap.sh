@@ -21,48 +21,45 @@ cfy_info "About to post IP address ${IP_ADDR}"
 
 set_runtime_properties "ip_address" $IP_ADDR
 
+export LOOKUPGROUPS=
 export GSA_JAVA_OPTIONS
 export LUS_JAVA_OPTIONS
 export GSM_JAVA_OPTIONS
 export GSC_JAVA_OPTIONS
 
+LOOKUPLOCATORS=$IP_ADDR
 if [ -f "/tmp/locators" ]; then
 	LOOKUPLOCATORS=""
 	for line in $(cat /tmp/locators); do
 		LOOKUPLOCATORS="${LOOKUPLOCATORS}${line},"
 	done
   	LOOKUPLOCATORS=${LOOKUPLOCATORS%%,}  #trim trailing comma
-	export LOOKUPLOCATORS
 fi
 
-$(ps -eaf|grep -v grep|grep -q GSA)
+export LOOKUPLOCATORS
+export NIC_ADDR=$LOOKUPLOCATORS
+export EXT_JAVA_OPTIONS="-Dcom.gs.multicast.enabled=false"
 
-if [ $? = 1 ]; then  #no gsa running already
+PS=`ps -eaf|grep -v grep|grep GSA`
+
+if [ "$PS" = "" ]; then  #no gsa running already
 
 	cfy_info "running gs-agent.sh from $CLOUDIFY_NODE_ID"
 
 	nohup $XAPDIR/bin/gs-agent.sh gsa.global.lus=$global_lus_cnt gsa.lus=$lus_cnt gsa.global.gsm=$global_gsm_cnt gsa.gsm $gsm_cnt gsa.gsc=$gsc_cnt 2>&1 >/tmp/xap.nohup.out &
 
+	sleep 10
+
 else #running local cloud
 
+	if [ $gsm_cnt -gt 0 ]; then
+		echo $gsm_cnt|$XAPDIR/bin/gs.sh gsa start-gsm
+	fi
+	if [ $lus_cnt -gt 0 ]; then
+		echo $lus_cnt|$XAPDIR/bin/gs.sh gsa start-lus
+	fi
+	if [ $gsc_cnt -gt 0 ]; then
+		echo $gsc_cnt|$XAPDIR/bin/gs.sh gsa start-gsc
+	fi
 
-	CNT=0
-	while [ $CNT -lt $gsm_cnt ]; do
-		cfy_info "running gsm.sh from $CLOUDIFY_NODE_ID"
-		echo 1|$XAPDIR/bin/gs.sh gsa start-gsm
-		let CNT=CNT+1
-	done
-	CNT=0
-	while [ $CNT -lt $lus_cnt ]; do
-		cfy_info "running lus.sh from $CLOUDIFY_NODE_ID"
-		echo 1|$XAPDIR/bin/gs.sh gsa start-lus
-		let CNT=CNT+1
-	done
-	CNT=0
-	while [ $CNT -lt $gsc_cnt ]; do
-		cfy_info "running gsc.sh from $CLOUDIFY_NODE_ID"
-		echo 1|$XAPDIR/bin/gs.sh gsa start-gsc
-		let CNT=CNT+1
-	done
-	
 fi

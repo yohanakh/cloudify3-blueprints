@@ -8,17 +8,17 @@ APT_GET_CMD=$(which apt-get)
 cfy_info "getting java"
 # Get Java
 if [[ ! -z $YUM_CMD ]]; then
-   sudo yum -y install java-1.7.0-openjdk || exit $?   
+   sudo yum -y -q install java-1.7.0-openjdk || exit $?   
 else
-   sudo apt-get -qq install openjdk-7-jdk || exit $?   
+   sudo apt-get -qq --no-upgrade install openjdk-7-jdk || exit $?   
 fi
 
 cfy_info "getting unzip"
 # Get Unzip
 if [[ ! -z $YUM_CMD ]]; then
-   sudo yum -y install unzip || exit $?   
+   sudo yum -y -q install unzip || exit $?   
 else
-   sudo apt-get -qq install unzip || exit $?   
+   sudo apt-get -qq --no-upgrade install unzip || exit $?   
 fi
 
 # Get XAP
@@ -40,13 +40,13 @@ if [ ! -d $DIR/xap ]; then
   echo $GSDIR > /tmp/gsdir
 
   cfy_info "GSDIR=$GSDIR" 
+  cfy_info "license_key=${license_key}"
 
   # Update license
-  ed $GSDIR/gslicense.xml <<EOF
-g/\(<licensekey>\).*\(<\/licensekey>\)/s//\1${license_key}\2/
-w
-q
-EOF
+  AS='s!\(.*\)\(<licensekey>\)\(.*\)\(<\/licensekey>\)\(.*\)!\1\2'$license_key'\4\5!'
+  cfy_info "AS=$AS"
+
+  sed -i -e "$AS" $GSDIR/gslicense.xml
 
   # unzip scripts
   pushd $GSDIR/bin

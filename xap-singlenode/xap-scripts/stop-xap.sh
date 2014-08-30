@@ -2,8 +2,8 @@
 
 source ${CLOUDIFY_LOGGING}
 
+LOOKUPLOCATORS=""
 if [ -f "/tmp/locators" ]; then
-	LOOKUPLOCATORS=""
 	for line in $(cat /tmp/locators); do
 		LOOKUPLOCATORS="${LOOKUPLOCATORS}${line},"
 	done
