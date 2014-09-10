@@ -26,7 +26,7 @@ types:
             - gsc_cnt: 0
             - GSC_JAVA_OPTS
             - download_url: "http://repository.cloudifysource.org/com/gigaspaces/xap-core/10.0.0-11600-RELEASE/gigaspaces-xap-premium-10.0.0-ga-b11600.zip"
-            - license_key: "Aug 20, 2016~DeWayneFilppi_GigaSpaces@ORwOOYpbOeORmVZZlBQh#PREMIUM^10.0XAPPremium%UNBOUND+UNLIMITED//WAN//EMT"
+            - license_key: ""
             - scripts:
                 create: xap-scripts/install-xap.sh
                 start: xap-scripts/start-xap.sh
