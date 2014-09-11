@@ -12,7 +12,7 @@ plugins:
             folder: xap-config-plugin
 
 types:
-    xap_node:
+    xap_type:
         derived_from: cloudify.types.bash.app_server
         properties:
             - GSA_JAVA_OPTS: ""
@@ -35,9 +35,9 @@ types:
     demo_shell:
         derived_from: cloudify.types.bash.web_server
         properties:
-            - butterfly_repo: https://github.com/yohanakh/butterfly.git
-            - demo_url: https://dl.dropboxusercontent.com/u/27248132/DemoScript.zip
-            - ui_port: 8888
+            - butterfly_repo: https://github.com/CloudifySource/butterfly.git
+            - demo_url: https://github.com/Gigaspaces/XAP-Interactive-Tutorial/archive/v1.0.zip
+            - port: 8888
 
 relationships:
     xap_connected_to_lus:
@@ -54,7 +54,7 @@ blueprint:
             properties:
                 ip: 127.0.0.1
                 cloudify_agent:
-                    key: /home/vagrant/.ssh/id_rsa
+                    key: /home/vagrant/.ssh/cloudify_private_key
                     user: vagrant
 
         -   name: xap_container_vm
@@ -62,11 +62,11 @@ blueprint:
             properties:
                 ip: 127.0.0.1
                 cloudify_agent:
-                    key: /home/vagrant/.ssh/id_rsa
+                    key: /home/vagrant/.ssh/cloudify_private_key
                     user: vagrant
 
         -   name: xap_mgmt
-            type: xap_node
+            type: xap_type
             properties:
                 lus_cnt: 1
                 gsm_cnt: 1
@@ -111,7 +111,7 @@ blueprint:
                     type: cloudify.relationships.depends_on
             
         -   name: xap_container
-            type: xap_node
+            type: xap_type
             properties:
                 gsc_cnt: 1
                 GSC_JAVA_OPTS: -Xms128m -Xmx128m

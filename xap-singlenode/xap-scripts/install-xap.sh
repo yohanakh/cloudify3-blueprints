@@ -10,6 +10,7 @@ cfy_info "getting java"
 if [[ ! -z $YUM_CMD ]]; then
    sudo yum -y -q install java-1.7.0-openjdk || exit $?   
 else
+   sudo apt-get -f install libdevmapper-event1.02.1
    sudo apt-get -qq --no-upgrade install openjdk-7-jdk || exit $?   
 fi
 
@@ -18,7 +19,7 @@ cfy_info "getting unzip"
 if [[ ! -z $YUM_CMD ]]; then
    sudo yum -y -q install unzip || exit $?   
 else
-   sudo apt-get -qq --no-upgrade install unzip || exit $?   
+   sudo apt-get -qq -f --no-upgrade install unzip || exit $?
 fi
 
 # Get XAP

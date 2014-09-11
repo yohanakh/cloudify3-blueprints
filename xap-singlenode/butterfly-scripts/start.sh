@@ -1,3 +1,4 @@
+#!/bin/sh
 source ${CLOUDIFY_LOGGING}
 
 function error_exit {
@@ -16,13 +17,13 @@ export GS_GROOVY_HOME=$GSDIR/tools/groovy/
 export EXT_JAVA_OPTIONS="-Dcom.gs.multicast.enabled=false"
 UUID=asdfsd
 
-source /tmp/virtenv_is/bin/activate
 source ~/.bashrc
+source /tmp/virtenv_is/bin/activate
 
 UUID=`uuidgen`
 
 cfy_info "launching butterfly server"
-python /tmp/demodl/butterfly/butterfly.server.py --host="0.0.0.0" --port="$ui_port" --unsecure --prompt_login=false --load_script="/tmp/demodl/start_tutorial.sh" --wd="/tmp/demodl" $UUID &
+python /tmp/demodl/butterfly/butterfly.server.py --host="0.0.0.0" --port="$port" --unsecure --prompt_login=false --load_script="/tmp/demodl/start_tutorial.sh" --wd="/tmp/demodl" $UUID &
 sleep 1
 cfy_info "launched butterfly server"
 deactivate

@@ -44,7 +44,7 @@ else
 fi
 pip install pyOpenSSL==0.12 || error_exit $? "Failed to install pyOpenSSL v0.12"
    cfy_info "cloning butterfly repo"
-git clone https://github.com/yohanakh/butterfly.git || error_exit $? "Failed to clone butterfly repository"
+git clone "${butterfly_repo}" || error_exit $? "Failed to clone butterfly repository"
 cd butterfly/ || error_exit $? "Failed to cd butterfly"
    cfy_info "installing butterfly"
 python setup.py install || error_exit $? "Failed on: python setup.py install"
