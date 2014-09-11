@@ -36,7 +36,7 @@ types:
         derived_from: cloudify.types.bash.web_server
         properties:
             - butterfly_repo: https://github.com/CloudifySource/butterfly.git
-            - demo_url: https://github.com/Gigaspaces/XAP-Interactive-Tutorial/archive/v1.0.zip
+            - demo_url: https://github.com/Gigaspaces/XAP-Interactive-Tutorial/archive/master.zip
             - port: 8888
 
 relationships:
