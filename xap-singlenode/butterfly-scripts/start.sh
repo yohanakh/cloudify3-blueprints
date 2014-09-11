@@ -15,6 +15,8 @@ LOOKUPLOCATORS=${LOOKUPLOCATORS%%,}  #trim trailing comma
 export LOOKUPLOCATORS
 export GS_GROOVY_HOME=$GSDIR/tools/groovy/
 export EXT_JAVA_OPTIONS="-Dcom.gs.multicast.enabled=false"
+export GS_HOME=$GSDIR
+
 UUID=asdfsd
 
 source ~/.bashrc
