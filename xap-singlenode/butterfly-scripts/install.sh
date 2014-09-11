@@ -20,9 +20,7 @@ pushd $DLDIR
 
 source ${CLOUDIFY_FILE_SERVER}
 
-#HACK: should wget from demo_url
-wget "${CLOUDIFY_FILE_SERVER_BLUEPRINT_ROOT}/butterfly-scripts/DemoScript.zip"
-#wget $demo_url
+wget "${demo_url}"
 
 unzip *.zip
 
