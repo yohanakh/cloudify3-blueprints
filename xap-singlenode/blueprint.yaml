@@ -11,6 +11,32 @@ plugins:
         properties:
             folder: xap-config-plugin
 
+    xap_admin_plugin:
+        derived_from: cloudify.plugins.agent_plugin
+        properties:
+            folder: xap-admin-plugin
+
+    xap_workflow_plugin:
+        derived_from: cloudify.plugins.manager_plugin
+        properties:
+            folder: xap-workflow-plugin
+
+workflows:
+    deploy_grid:
+        mapping: xap_workflow_plugin.tasks.deploy_grid
+        parameters:
+            - grid_name: dataGrid
+            - schema: partitioned-sync2backup
+            - partitions: 1
+            - backups: 0
+            - max_per_vm: 0
+            - max_per_machine: 0
+
+    undeploy_grid:
+        mapping: xap_workflow_plugin.tasks.undeploy_grid
+        parameters:
+            - grid_name: dataGrid
+
 types:
     xap_type:
         derived_from: cloudify.types.bash.app_server
@@ -24,7 +50,7 @@ types:
             - LUS_JAVA_OPTS: ""
             - global_lus_cnt: 0
             - gsc_cnt: 0
-            - GSC_JAVA_OPTS
+            - GSC_JAVA_OPTS: ""
             - download_url: "http://repository.cloudifysource.org/com/gigaspaces/xap-core/10.0.0-11600-RELEASE/gigaspaces-xap-premium-10.0.0-ga-b11600.zip"
             - license_key: ""
             - scripts:
@@ -74,6 +100,16 @@ blueprint:
             relationships:
                 -   target: xap_mgmt_vm
                     type: cloudify.relationships.contained_in
+            interfaces:
+                admin.commands:
+                  -   deploy_grid:
+                          mapping: xap_admin_plugin.tasks.deploy_grid
+                          properties:
+                              script: xap-scripts/deploy-grid.sh
+                  -   undeploy_grid:
+                          mapping: xap_admin_plugin.tasks.undeploy_grid
+                          properties:
+                              script: xap-scripts/undeploy-grid.sh
 
         -   name: interactive_shell
             type: demo_shell
@@ -103,7 +139,7 @@ blueprint:
             type: cloudify.types.bash.app_module
             properties:
                 scripts:
-                    start: xap-scripts/deploy-demo-space.sh
+                    start: xap-scripts/deploy-demo-grid.sh
             relationships:
                 -   target: xap_mgmt_vm
                     type: cloudify.relationships.contained_in
