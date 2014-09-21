@@ -15,24 +15,45 @@
 # * limitations under the License.
 from cloudify.decorators import operation
 import subprocess
+import urllib
+import os
 
 @operation
 def deploy_grid(ctx, **kwargs):
-        script = ctx.properties['script']
-        script_path = ctx.download_resource(script)
-        ctx.logger.info("script_path= " + script_path + " script= " + script)
-        subprocess.check_call(["chmod", "777", script_path])
-        ctx.logger.info("partitionssssss " + str(kwargs["partitions"]))
-        output = subprocess.check_output([script_path, kwargs["grid_name"], kwargs["schema"], str(kwargs["partitions"]), str(kwargs["backups"]), str(kwargs["max_per_vm"]), str(kwargs["max_per_machine"])])
-        ctx.logger.info(script_path + " output:" + output)
+    script = ctx.properties['script']
+    script_path = ctx.download_resource(script)
+    subprocess.check_call(["chmod", "777", script_path])
+    output = subprocess.check_output([script_path, kwargs["grid_name"], kwargs["schema"], str(kwargs["partitions"]),
+                                      str(kwargs["backups"]), str(kwargs["max_per_vm"]), str(kwargs["max_per_machine"])])
+    ctx.logger.info(script_path + " output:" + output)
 
 @operation
 def undeploy_grid(ctx, **kwargs):
     script = ctx.properties['script']
     script_path = ctx.download_resource(script)
-    ctx.logger.info("script_path= " + script_path + " script= " + script)
     subprocess.check_call(["chmod", "777", script_path])
     output = subprocess.check_output([script_path, kwargs["grid_name"]])
+    ctx.logger.info(script_path + " output:" + output)
+
+@operation
+def deploy_pu(ctx, **kwargs):
+    script = ctx.properties['script']
+    script_path = ctx.download_resource(script)
+    tmp_pus = '/tmp/pus'
+    if not os.path.exists(tmp_pus):
+        os.makedirs(tmp_pus)
+    jar_name = kwargs["pu_url"].split("/")[-1]
+
+    pu_location = tmp_pus + '/' + jar_name
+    urllib.urlretrieve(kwargs["pu_url"], pu_location)
+    subprocess.check_call(["chmod", "777", script_path])
+    if kwargs["override_pu_name"] != {}:
+        pu_name = kwargs["override_pu_name"]
+    else:
+        pu_name = jar_name.split(".jar")[0]
+
+    output = subprocess.check_output([script_path, pu_location, pu_name, kwargs["schema"],
+                                      str(kwargs["partitions"]), str(kwargs["backups"]), str(kwargs["max_per_vm"]), str(kwargs["max_per_machine"])])
     ctx.logger.info(script_path + " output:" + output)
 
 

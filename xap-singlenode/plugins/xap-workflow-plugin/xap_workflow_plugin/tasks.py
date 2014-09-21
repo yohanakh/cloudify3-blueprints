@@ -23,9 +23,6 @@ def deploy_grid(ctx, grid_name, schema, partitions, backups, max_per_vm, max_per
         ctx.logger.info(node.type_hierarchy)
         if "xap_mgmt" in node.id:
             for instance in node.instances:
-                ctx.logger.info("adding task " + grid_name)
-                ctx.logger.info(schema)
-                ctx.logger.info(backups)
                 graph.add_task(instance.execute_operation("admin.commands.deploy_grid",
                                                           kwargs={'grid_name':grid_name, 'schema':schema,'partitions':partitions, 'backups':backups,
                                                                   'max_per_vm':max_per_vm, 'max_per_machine':max_per_machine}))
@@ -38,9 +35,20 @@ def undeploy_grid(ctx, grid_name, **kwargs):
         ctx.logger.info(node.type_hierarchy)
         if "xap_mgmt" in node.id:
             for instance in node.instances:
-                ctx.logger.info("adding task " + grid_name)
                 graph.add_task(instance.execute_operation("admin.commands.undeploy_grid",
                                                           kwargs={'grid_name':grid_name}))
+    return graph.execute()
+
+@workflow
+def deploy_pu(ctx, pu_url, override_pu_name, schema, partitions, backups, max_per_vm, max_per_machine, **kwargs):
+    graph = ctx.graph_mode()
+    for node in ctx.nodes:
+        ctx.logger.info(node.type_hierarchy)
+        if "xap_mgmt" in node.id:
+            for instance in node.instances:
+                graph.add_task(instance.execute_operation("admin.commands.deploy_pu",
+                                                          kwargs={'pu_url':pu_url, 'override_pu_name':override_pu_name, 'schema':schema,'partitions':partitions, 'backups':backups,
+                                                                  'max_per_vm':max_per_vm, 'max_per_machine':max_per_machine}))
     return graph.execute()
 
 

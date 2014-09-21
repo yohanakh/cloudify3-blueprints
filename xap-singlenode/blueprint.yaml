@@ -31,7 +31,16 @@ workflows:
             - backups: 0
             - max_per_vm: 0
             - max_per_machine: 0
-
+    deploy_pu:
+        mapping: xap_workflow_plugin.tasks.deploy_pu
+        parameters:
+            - pu_url: ""
+            - override_pu_name: ""
+            - schema: partitioned-sync2backup
+            - partitions: 1
+            - backups: 0
+            - max_per_vm: 0
+            - max_per_machine: 0
     undeploy_grid:
         mapping: xap_workflow_plugin.tasks.undeploy_grid
         parameters:
@@ -51,7 +60,7 @@ types:
             - global_lus_cnt: 0
             - gsc_cnt: 0
             - GSC_JAVA_OPTS: ""
-            - download_url: "http://repository.cloudifysource.org/com/gigaspaces/xap-core/10.0.0-11600-RELEASE/gigaspaces-xap-premium-10.0.0-ga-b11600.zip"
+            - download_url: http://repository.cloudifysource.org/com/gigaspaces/xap-core/10.0.0-11600-RELEASE/gigaspaces-xap-premium-10.0.0-ga-b11600.zip
             - license_key: ""
             - scripts:
                 create: xap-scripts/install-xap.sh
@@ -110,6 +119,10 @@ blueprint:
                           mapping: xap_admin_plugin.tasks.undeploy_grid
                           properties:
                               script: xap-scripts/undeploy-grid.sh
+                  -   deploy_pu:
+                          mapping: xap_admin_plugin.tasks.deploy_pu
+                          properties:
+                              script: xap-scripts/deploy-pu.sh
 
         -   name: interactive_shell
             type: demo_shell
