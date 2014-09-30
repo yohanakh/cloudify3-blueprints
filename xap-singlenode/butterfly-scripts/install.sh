@@ -10,24 +10,35 @@ function error_exit {
    exit ${1}
 }
 
+source ${CLOUDIFY_FILE_SERVER}
+
 YUM_CMD=$(which yum)
 APT_GET_CMD=$(which apt-get)
 
-DLDIR=/tmp/demodl
-mkdir $DLDIR
+if [ ! -d /tmp/demodl ]; then
+  DLDIR=/tmp/demodl
+  mkdir $DLDIR
+  pushd $DLDIR
+  wget "${demo_url}"
+  unzip *.zip
+  chmod +x *.sh
+fi
 
-pushd $DLDIR
+if [[ ! -z $YUM_CMD ]]; then
+   sudo yum -y update
+else
+   cfy_info "running apt-get update"
+   sudo apt-get clean all
+   sudo dpkg --configure -a
+   sudo apt-get -qq update
+   cfy_info "installing python-setuptools with apt-get"
+   sudo apt-get install python-setuptools || error_exit $? "Failed to install requirements ( python-setuptools)"
+fi
 
-source ${CLOUDIFY_FILE_SERVER}
-
-wget "${demo_url}"
-
-unzip *.zip
-
-chmod +x *.sh
-
+sudo easy_install virtualenv || error_exit $? "Failed on: easy_install virtualenv"
 virtualenv /tmp/virtenv_is --no-site-packages || error_exit $? "Failed on: virtualenv virtenv"
 source /tmp/virtenv_is/bin/activate
+
 if [[ ! -z $YUM_CMD ]]; then
    sudo yum -y update
    sudo yum -y install git python-pip gcc python-devel openssl-devel || error_exit $? "Failed to install requirements (git python-pip gcc python-devel)"

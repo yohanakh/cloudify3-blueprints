@@ -4,6 +4,7 @@
 imports:
      -  http://www.getcloudify.org/spec/cloudify/3.0/types.yaml
      -  http://www.getcloudify.org/spec/bash-plugin/1.0/plugin.yaml
+     -  http://www.getcloudify.org/spec/openstack-plugin/1.0/plugin.yaml
 
 plugins:
     xap_config_plugin:
@@ -47,6 +48,12 @@ workflows:
             - grid_name: dataGrid
 
 types:
+    vm_host:
+        derived_from: cloudify.openstack.server
+        properties:
+            - cloudify_agent:
+                user: ubuntu
+
     xap_type:
         derived_from: cloudify.types.bash.app_server
         properties:
@@ -80,32 +87,106 @@ relationships:
         source_interfaces:
             cloudify.interfaces.relationship_lifecycle:
                 - postconfigure: xap_config_plugin.tasks.get_locator
-     
+
 blueprint:
     name: xap
     nodes:
-        -   name: xap_mgmt_vm
-            type: cloudify.types.host
+        -   name: xap_mgmt_security_group
+            type: cloudify.openstack.security_group
             properties:
-                ip: 127.0.0.1
-                cloudify_agent:
-                    key: /home/vagrant/.ssh/cloudify_private_key
-                    user: vagrant
+                security_group:
+                    name: xap_mgmt_security_group
+                rules:
+                    - remote_ip_prefix: 0.0.0.0/0
+                      port: 8099
+                    - remote_ip_prefix: 0.0.0.0/0
+                      port: 9099
+                    - remote_ip_prefix: 0.0.0.0/0
+                      port_range_min: 7122
+                      port_range_max: 7222
+                    - direction: egress
+                      remote_ip_prefix: 0.0.0.0/0
+                      port_range_min: 7122
+                      port_range_max: 7222
+                    - remote_ip_prefix: 0.0.0.0/0
+                      port: 4174
+                    - direction: egress
+                      remote_ip_prefix: 0.0.0.0/0
+                      port: 4174
+                    - remote_ip_prefix: 0.0.0.0/0
+                      port_range_min: 7102
+                      port_range_max: 7104
+                    - direction: egress
+                      remote_ip_prefix: 0.0.0.0/0
+                      port_range_min: 7102
+                      port_range_max: 7104
+
+        -   name: xap_container_security_group
+            type: cloudify.openstack.security_group
+            properties:
+                security_group:
+                    name: xap_container_security_group
+                rules:
+                    - remote_ip_prefix: 0.0.0.0/0
+                      port_range_min: 7122
+                      port_range_max: 7222
+                    - direction: egress
+                      remote_ip_prefix: 0.0.0.0/0
+                      port_range_min: 7122
+                      port_range_max: 7222
+                    - remote_ip_prefix: 0.0.0.0/0
+                      port: 4174
+                    - direction: egress
+                      remote_ip_prefix: 0.0.0.0/0
+                      port: 4174
+                    - remote_ip_prefix: 0.0.0.0/0
+                      port_range_min: 7102
+                      port_range_max: 7104
+                    - direction: egress
+                      remote_ip_prefix: 0.0.0.0/0
+                      port_range_min: 7102
+                      port_range_max: 7104
+
+        -   name: floatingip
+            type: cloudify.openstack.floatingip
+            properties:
+                floatingip:
+                    floating_network_name: Ext-Net
+
+        -   name: xap_mgmt_vm
+            type: vm_host
+            instances:
+                deploy: 1
+            properties:
+              server:
+                  image: cec56e36-3c3a-4121-a6a1-6b7bef22d811
+                  flavor: 102
+                  security_groups: ['xap_mgmt_security_group']
+            relationships:
+                - target: floatingip
+                  type: cloudify.openstack.server_connected_to_floating_ip
+                - target: xap_mgmt_security_group
+                  type: cloudify.relationships.depends_on
 
         -   name: xap_container_vm
-            type: cloudify.types.host
+            type: vm_host
+            instances:
+                deploy: 1
             properties:
-                ip: 127.0.0.1
-                cloudify_agent:
-                    key: /home/vagrant/.ssh/cloudify_private_key
-                    user: vagrant
+              server:
+                  image: cec56e36-3c3a-4121-a6a1-6b7bef22d811
+                  flavor: 102
+                  security_groups: ['xap_container_security_group']
+            relationships:
+                - target: xap_container_security_group
+                  type: cloudify.relationships.depends_on
 
         -   name: xap_mgmt
             type: xap_type
             properties:
                 lus_cnt: 1
                 gsm_cnt: 1
-                GSM_JAVA_OPTS: -Xms128m -Xmx128m
+                GSC_JAVA_OPTS: -Xms128m -Xmx128m
             relationships:
                 -   target: xap_mgmt_vm
                     type: cloudify.relationships.contained_in
@@ -130,7 +211,7 @@ blueprint:
                 scripts:
                     create: butterfly-scripts/install.sh
                     start:  butterfly-scripts/start.sh
-                    stop:   butterfly-scripts/stop.sh
+                    stop:   butterfly-script/stop.sh
             relationships:
                 -   target: xap_mgmt_vm
                     type: cloudify.relationships.contained_in
@@ -142,7 +223,6 @@ blueprint:
             properties:
                 scripts:
                     start: xap-scripts/start-ui.sh
-                    stop: xap-scripts/stop-ui.sh
             relationships:
                 -   target: xap_mgmt_vm
                     type: cloudify.relationships.contained_in
@@ -159,7 +239,7 @@ blueprint:
                     type: cloudify.relationships.contained_in
                 -   target: xap_mgmt
                     type: cloudify.relationships.depends_on
-            
+
         -   name: xap_container
             type: xap_type
             properties:

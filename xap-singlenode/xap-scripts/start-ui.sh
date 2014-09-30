@@ -14,6 +14,9 @@ LOOKUPLOCATORS=""
   	LOOKUPLOCATORS=${LOOKUPLOCATORS%%,}  #trim trailing comma
 	export LOOKUPLOCATORS
 fi
+export LOOKUPLOCATORS
+export NIC_ADDR=${IP_ADDR}
+export EXT_JAVA_OPTIONS="-Dcom.gs.multicast.enabled=false -Dcom.gs.transport_protocol.lrmi.bind-port=7122-7222 -Dcom.gigaspaces.start.httpPort=7104 -Dcom.gigaspaces.system.registryPort=7102"
 
 cfy_info "locators=$LOOKUPLOCATORS"
 

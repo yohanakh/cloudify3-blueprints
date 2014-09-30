@@ -37,8 +37,8 @@ if [ -f "/tmp/locators" ]; then
 fi
 
 export LOOKUPLOCATORS
-export NIC_ADDR=$LOOKUPLOCATORS
-export EXT_JAVA_OPTIONS="-Dcom.gs.multicast.enabled=false"
+export NIC_ADDR=${IP_ADDR}
+export EXT_JAVA_OPTIONS="-Dcom.gs.multicast.enabled=false -Dcom.gs.transport_protocol.lrmi.bind-port=7122-7222 -Dcom.gigaspaces.start.httpPort=7104 -Dcom.gigaspaces.system.registryPort=7102"
 
 PS=`ps -eaf|grep -v grep|grep GSA`
 
