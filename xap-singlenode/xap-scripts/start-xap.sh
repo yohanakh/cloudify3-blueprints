@@ -26,6 +26,8 @@ export GSA_JAVA_OPTIONS
 export LUS_JAVA_OPTIONS
 export GSM_JAVA_OPTIONS
 export GSC_JAVA_OPTIONS
+export {LRMI_COMM_MIN_PORT:=$lrmi_comm_min_port}
+export {LRMI_COMM_MAX_PORT:=$lrmi_comm_max_port}
 
 LOOKUPLOCATORS=$IP_ADDR
 if [ -f "/tmp/locators" ]; then
@@ -38,7 +40,7 @@ fi
 
 export LOOKUPLOCATORS
 export NIC_ADDR=${IP_ADDR}
-export EXT_JAVA_OPTIONS="-Dcom.gs.multicast.enabled=false -Dcom.gs.transport_protocol.lrmi.bind-port=7122-7222 -Dcom.gigaspaces.start.httpPort=7104 -Dcom.gigaspaces.system.registryPort=7102"
+export EXT_JAVA_OPTIONS="-Dcom.gs.multicast.enabled=false -Dcom.gs.transport_protocol.lrmi.bind-port=$LRMI_COMM_MIN_PORT-$LRMI_COMM_MAX_PORT -Dcom.gigaspaces.start.httpPort=7104 -Dcom.gigaspaces.system.registryPort=7102"
 
 PS=`ps -eaf|grep -v grep|grep GSA`
 
