@@ -38,7 +38,7 @@ if [ ! -d $DIR/xap ]; then
   unzip *.zip
   popd
 
-  GSDIR=`ls -d $DIR/xap/gigaspaces*premium*ga`
+  GSDIR=`ls -d $DIR/xap/gigaspaces*premium*m4`
   echo $GSDIR > /tmp/gsdir
 
   cfy_info "GSDIR=$GSDIR" 
