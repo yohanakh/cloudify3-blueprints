@@ -14,8 +14,8 @@ The most critical configuration option is the <i>license_key</i> property, which
 
 #####Node #1 : xap_mgmt_vm
 The <i>xap_mgmt_vm</i> node contains the XAP management processes: GSA, GSM, LUS, Web UI and web terminal based called butterfly.
-<br/>XAP web ui url: <a href="http://localcloud:8089">http://localcloud:8888</a>.
-<br/>Butterfly Url: <a href="http://localcloud:8888">http://localcloud:8888</a>.
+<br/>XAP web ui url: <a href="http://localcloud:8089">http://localcloud:8089</a>.
+<br/>Butterfly Url: <a href="http://localcloud:9099">http://localcloud:9099</a>.
 
 #####Node #2 : xap_container_vm
 The <i>xap_container_vm</i> node contains the XAP container process: GSC.
