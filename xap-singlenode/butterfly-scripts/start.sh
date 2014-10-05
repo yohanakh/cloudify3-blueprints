@@ -19,8 +19,9 @@ fi
 export LOOKUPLOCATORS
 export NIC_ADDR=${IP_ADDR}
 export GS_GROOVY_HOME=$GSDIR/tools/groovy/
-export {LRMI_COMM_MIN_PORT:=7122}
-export {LRMI_COMM_MAX_PORT:=7222}
+export LRMI_COMM_MIN_PORT=$lrmi_comm_min_port
+export LRMI_COMM_MAX_PORT=$lrmi_comm_max_port
+
 export EXT_JAVA_OPTIONS="-Dcom.gs.multicast.enabled=false -Dcom.gs.transport_protocol.lrmi.bind-port=$LRMI_COMM_MIN_PORT-$LRMI_COMM_MAX_PORT -Dcom.gigaspaces.start.httpPort=7104 -Dcom.gigaspaces.system.registryPort=7102"
 
 

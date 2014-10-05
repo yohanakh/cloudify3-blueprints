@@ -26,8 +26,9 @@ export GSA_JAVA_OPTIONS
 export LUS_JAVA_OPTIONS
 export GSM_JAVA_OPTIONS
 export GSC_JAVA_OPTIONS
-export {LRMI_COMM_MIN_PORT:=$lrmi_comm_min_port}
-export {LRMI_COMM_MAX_PORT:=$lrmi_comm_max_port}
+export LRMI_COMM_MIN_PORT=$lrmi_comm_min_port
+export LRMI_COMM_MAX_PORT=$lrmi_comm_max_port
+
 
 LOOKUPLOCATORS=$IP_ADDR
 if [ -f "/tmp/locators" ]; then
