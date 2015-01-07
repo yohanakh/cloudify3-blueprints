@@ -54,6 +54,8 @@ types:
             - gsm_cnt: 0
             - global_gsm_cnt: 0
             - GSM_JAVA_OPTS: ""
+            - lrmi_comm_min_port: 7122
+            - lrmi_comm_max_port: 7222
             - lus_cnt: 0
             - lus_port: 0
             - LUS_JAVA_OPTS: ""
