@@ -21,6 +21,8 @@ cfy_info "About to post IP address ${IP_ADDR}"
 
 set_runtime_properties "ip_address" $IP_ADDR
 
+echo $IP_ADDR > /tmp/locators
+
 export LOOKUPGROUPS=
 export GSA_JAVA_OPTIONS
 export LUS_JAVA_OPTIONS

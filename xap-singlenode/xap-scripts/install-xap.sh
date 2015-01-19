@@ -10,7 +10,6 @@ cfy_info "getting java"
 if [[ ! -z $YUM_CMD ]]; then
    sudo yum -y -q install java-1.7.0-openjdk || exit $?   
 else
-   sudo apt-get update
    sudo apt-get -f install libdevmapper-event1.02.1
    sudo apt-get -qq --no-upgrade install openjdk-7-jdk || exit $?   
 fi
@@ -38,7 +37,7 @@ if [ ! -d $DIR/xap ]; then
   unzip *.zip
   popd
 
-  GSDIR=`ls -d $DIR/xap/gigaspaces*premium*m4`
+  GSDIR=`ls -d $DIR/xap/gigaspaces*premium*ga`
   echo $GSDIR > /tmp/gsdir
 
   cfy_info "GSDIR=$GSDIR" 
@@ -55,6 +54,9 @@ if [ ! -d $DIR/xap ]; then
   unzip advanced_scripts.zip	
   popd
 
-fi
+  # add dynamic nat mapper (needed for gateway)
+  wget -O $GSDIR/lib/required/nat-mapper.jar "${CLOUDIFY_FILE_SERVER_BLUEPRINT_ROOT}/xap-scripts/nat-mapper.jar"
 
+
+fi
 

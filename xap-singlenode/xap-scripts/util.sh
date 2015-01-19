@@ -15,6 +15,11 @@ function set_runtime_properties {
   cfy_info "Node state is ${NODE_STATE}"
 
   VERSION=`echo ${NODE_STATE} | /tmp/jq  '.version'`
+
+  if [ "$VERSION" = "" ]; then
+    VERSION=0
+  fi
+
   cfy_info "version is ${VERSION}"
 
   RUNTIME_PROPERTIES="{\"runtime_properties\":{"
