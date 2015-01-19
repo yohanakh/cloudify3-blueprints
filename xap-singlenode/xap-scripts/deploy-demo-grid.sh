@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source ${CLOUDIFY_LOGGING}
-
 XAPDIR=`cat /tmp/gsdir`  # left by install script
 
 IP_ADDR=$(ip addr | grep inet | grep eth0 | awk -F" " '{print $2}'| sed -e 's/\/.*$//')
@@ -16,5 +14,5 @@ if [ -f "/tmp/locators" ]; then
 	export LOOKUPLOCATORS
 fi
 
-cfy_info "deploying space, locators=$LOOKUPLOCATORS"
+ctx logger info "deploying space, locators=$LOOKUPLOCATORS"
 $XAPDIR/bin/gs.sh deploy-space myDataGrid

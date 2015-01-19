@@ -1,6 +1,5 @@
 #!/bin/bash
 
-#source ${CLOUDIFY_LOGGING}
 PU_LOCATION=$1
 PU_NAME=$2
 SCHEMA=$3

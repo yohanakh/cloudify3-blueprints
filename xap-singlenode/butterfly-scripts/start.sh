@@ -1,10 +1,11 @@
-#!/bin/sh
-source ${CLOUDIFY_LOGGING}
+#!/bin/bash
 
 function error_exit {
-   cfy_error "$2 : error code: $1"
+   ctx logger error "$2 : error code: $1"
    exit ${1}
 }
+port=$(ctx node properties port) || error_exit $? "Unable to set port from properties"
+
 IP_ADDR=$(ip addr | grep inet | grep eth0 | awk -F" " '{print $2}'| sed -e 's/\/.*$//')
 GSDIR=`cat /tmp/gsdir`
 LOOKUPLOCATORS=$IP_ADDR
@@ -36,12 +37,13 @@ source /tmp/virtenv_is/bin/activate
 
 UUID=`uuidgen`
 
-cfy_info "launching butterfly server"
-python /tmp/demodl/butterfly/butterfly.server.py --host="0.0.0.0" --port="$port" --unsecure --prompt_login=false --load_script="/tmp/demodl/XAP-Interactive-Tutorial-master/start_tutorial.sh" --wd="/tmp/demodl/XAP-Interactive-Tutorial-master" $UUID 2>&1 >/tmp/demodl.nohup.out &
+ctx logger info "launching butterfly server"
+nohup python /tmp/demodl/butterfly/butterfly.server.py --host="0.0.0.0" --port="$port" --unsecure --prompt_login=false --load_script="/tmp/demodl/XAP-Interactive-Tutorial-master/start_tutorial.sh" --wd="/tmp/demodl/XAP-Interactive-Tutorial-master" >/tmp/demodl.nohup.out $UUID 2>&1 &
 sleep 1
-cfy_info "launched butterfly server"
+ctx logger info "launched butterfly server"
 deactivate
-cfy_info "deactivated"
+ctx logger info "deactivated"
 
 echo $! > /tmp/butterfly.pid
 
+ctx logger info "butterfly started"

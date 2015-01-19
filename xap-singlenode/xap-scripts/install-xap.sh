@@ -1,20 +1,22 @@
 #!/bin/bash
 
-source ${CLOUDIFY_LOGGING}
-
 YUM_CMD=$(which yum)
 APT_GET_CMD=$(which apt-get)
 
-cfy_info "getting java"
+download_url=$(ctx node properties download_url)
+license_key=$(ctx node properties license_key)
+
+ctx logger info "getting java"
 # Get Java
 if [[ ! -z $YUM_CMD ]]; then
    sudo yum -y -q install java-1.7.0-openjdk || exit $?   
 else
+   sudo apt-get update
    sudo apt-get -f install libdevmapper-event1.02.1
    sudo apt-get -qq --no-upgrade install openjdk-7-jdk || exit $?   
 fi
 
-cfy_info "getting unzip"
+ctx logger info "getting unzip"
 # Get Unzip
 if [[ ! -z $YUM_CMD ]]; then
    sudo yum -y -q install unzip || exit $?   
@@ -22,30 +24,36 @@ else
    sudo apt-get -qq -f --no-upgrade install unzip || exit $?
 fi
 
+# Set runtime properties 
+IP_ADDR=$(ip addr | grep inet | grep eth0 | awk -F" " '{print $2}'| sed -e 's/\/.*$//')
+ctx logger info "About to post IP address ${IP_ADDR}"
+
+ctx instance runtime-properties ip_address $IP_ADDR
+
 # Get XAP
 
 DIR=/tmp
-
 
 # check only needed for local cloud 
 if [ ! -d $DIR/xap ]; then
   mkdir $DIR/xap
   pushd $DIR/xap
-  cfy_info "getting xap from ${download_url}"
+  ctx logger info "getting xap from ${download_url}"
   wget -N ${download_url}
 
   unzip *.zip
+  rm *.zip
   popd
 
-  GSDIR=`ls -d $DIR/xap/gigaspaces*premium*ga`
+  GSDIR=`ls -d $DIR/xap/gigaspaces*premium*`
   echo $GSDIR > /tmp/gsdir
 
-  cfy_info "GSDIR=$GSDIR" 
-  cfy_info "license_key=${license_key}"
+  ctx logger info "GSDIR=$GSDIR" 
+  ctx logger info "license_key=${license_key}"
 
   # Update license
   AS='s!\(.*\)\(<licensekey>\)\(.*\)\(<\/licensekey>\)\(.*\)!\1\2'$license_key'\4\5!'
-  cfy_info "AS=$AS"
+  ctx logger info "AS=$AS"
 
   sed -i -e "$AS" $GSDIR/gslicense.xml
 
@@ -55,7 +63,8 @@ if [ ! -d $DIR/xap ]; then
   popd
 
   # add dynamic nat mapper (needed for gateway)
-  wget -O $GSDIR/lib/required/nat-mapper.jar "${CLOUDIFY_FILE_SERVER_BLUEPRINT_ROOT}/xap-scripts/nat-mapper.jar"
+
+  ctx download-resource "xap-scripts/nat-mapper.jar" "@{\"target_path\": \"$GSDIR/lib/required/nat-mapper.jar\"}"
 
 
 fi
