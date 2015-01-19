@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source ${CLOUDIFY_LOGGING}
-
 GRID_NAME=$1
 
 XAPDIR=`cat /tmp/gsdir`  # left by install script
@@ -18,9 +16,9 @@ if [ -f "/tmp/locators" ]; then
 	export LOOKUPLOCATORS
 fi
 
-cfy_info "deploying space, locators=$LOOKUPLOCATORS"
-cfy_info "space name, $GRID_NAME"
-cfy_info "schema, $SCHEMA"
-cfy_info "xap dir, $XAPDIR"
+ctx logger info "deploying space, locators=$LOOKUPLOCATORS"
+ctx logger info "space name, $GRID_NAME"
+ctx logger info "schema, $SCHEMA"
+ctx logger info "xap dir, $XAPDIR"
 
 $XAPDIR/bin/gs.sh undeploy ${GRID_NAME}
