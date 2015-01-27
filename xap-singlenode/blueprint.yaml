@@ -265,8 +265,7 @@ node_templates:
 
 
 groups:
-
-    autohealing_group':
+    autohealing_group:
       members: [xap_mgmt_vm,xap_container_vm,webui]
       policies:
         simple_autoheal_policy:

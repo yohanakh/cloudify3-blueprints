@@ -24,20 +24,21 @@ import org.openspaces.core.gateway.GatewayTarget
 import org.openspaces.admin.space.Space
 import java.util.regex.Pattern
 
-def puname=args[0]
-def spacename=args[1]
-def zones=args[2]
-def locallocators=args[3]
-def localgwname=args[4]
-def targets=args[5]
-def sources=args[6]
-def lookups=Eval.me(quoteAlnum(args[7]))
-def natmappings=args[8] //map from private to public ip
+def puname=System.getProperty("puname")
+def spacename=System.getProperty("spacename")
+def zones=System.getProperty("zones")
+def locallocators=System.getProperty("locallocators")
+def localgwname=System.getProperty("localgwname")
+def targets=System.getProperty("targets")
+def sources=System.getProperty("sources")
+def lookups=System.getProperty("lookups")
+def natmappings=System.getProperty("natmappings") //map from private to public ip
 
 assert (spacename!=null),"space name must not be null"
 assert (locallocators!=null),"no local locators"
 assert (localgwname!=null),"local gateway name must not be null"
 assert (lookups!=null),"no lookups defined"
+
 
 //CREATE PU
 pudir="/tmp/gwpu/META-INF/spring"
@@ -49,9 +50,9 @@ new AntBuilder().sequential(){
 def binding=[:]
 binding['localgwname']=localgwname
 binding['localspaceurl']="jini://*/*/${spacename}?locators=${locallocators}"
-binding['lookups']=lookups
-binding['targets']=targets
-binding['sources']=sources
+binding['lookups']=Eval.me(lookups)
+binding['targets']=Eval.me(targets)
+binding['sources']=Eval.me(sources)
 
 def engine = new SimpleTemplateEngine()
 def putemplate = new File('/tmp/gateway-pu.xml')
@@ -77,7 +78,7 @@ def gsm=admin.gridServiceManagers.waitForAtLeastOne(1,TimeUnit.MINUTES)
 assert gsm!=null
 
 // Make sure the space exists
-Space space=admin.getSpaces().waitFor(spacename,1,TimeUnit.MINUTES)
+Space space=admin.getSpaces().waitFor(spacename,2,TimeUnit.MINUTES)
 assert space!=null,"failed to locate space ${spacename}"
 
 //deploy
@@ -91,7 +92,7 @@ def pu=gsm.deploy(pucfg,1,TimeUnit.MINUTES)
 assert pu!=null,"timed out waiting for gateway deployment"
 
 // add gateway to space
-targets.trim().split(",").each{target->
+/*targets.trim().split(",").each{target->
 	//remove existing, if any
 	try{
 	  space.getReplicationManager().removeGatewayTarget(target)
@@ -100,7 +101,7 @@ targets.trim().split(",").each{target->
 	println "adding target ${target}"
 	GatewayTarget gwTarget = new GatewayTarget(target)
 	space.getReplicationManager().addGatewayTarget(gwTarget)
-}
+}*/
 
 //Puts quotes around alpha-num substrings in parameter
 

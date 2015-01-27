@@ -22,8 +22,8 @@
 <%
 def isSource=false
 def isSink=false
-if(targets.length()>0)isSource=true
-if(sources.length()>0)isSink=true
+if(targets.size()>0)isSource=true
+if(sources.size()>0)isSink=true
 
 if(isSource){
         println """\
@@ -31,7 +31,7 @@ if(isSource){
         local-gateway-name="${localgwname}" gateway-lookups="gatewayLookups">
         <os-gateway:delegations> """
 
-        targets.trim().split(",").each{
+        targets.each{
                   println "    <os-gateway:delegation target=\"${it}\"/>"
         }
 }
@@ -49,7 +49,7 @@ println """\
     gateway-lookups=\"gatewayLookups\"
       local-space-url=\"${localspaceurl}\">
         <os-gateway:sources>    """
-        sources.trim().split(",").each{
+        sources.each{
           println "   <os-gateway:source name=\"${it}\"/>"
         }
         println """\

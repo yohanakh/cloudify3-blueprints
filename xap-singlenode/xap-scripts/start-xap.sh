@@ -12,6 +12,7 @@ gsc_cnt=$(ctx -j node properties gsc_cnt)
 global_lus_cnt=$(ctx -j node properties global_lus_cnt)
 lrmi_comm_min_port=$(ctx -j node properties lrmi_comm_min_port)
 lrmi_comm_max_port=$(ctx -j node properties lrmi_comm_max_port)
+zones=$(ctx -j node properties zones)
 
 sudo ulimit -n 32000
 sudo ulimit -u 32000
@@ -36,6 +37,8 @@ fi
 export LOOKUPLOCATORS
 export NIC_ADDR=${IP_ADDR}
 export EXT_JAVA_OPTIONS="-Dcom.gs.multicast.enabled=false -Dcom.gs.transport_protocol.lrmi.bind-port=$lrmi_comm_min_port-$lrmi_comm_max_port -Dcom.gigaspaces.start.httpPort=7104 -Dcom.gigaspaces.system.registryPort=7102"
+
+export GSC_JAVA_OPTIONS="$GSC_JAVA_OPTIONS -Dcom.gs.zones=${zones}"
 
 PS=`ps -eaf|grep -v grep|grep GSA`
 

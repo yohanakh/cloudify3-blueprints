@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -x
 YUM_CMD=$(which yum)
 APT_GET_CMD=$(which apt-get)
 
@@ -32,7 +32,7 @@ ctx instance runtime-properties ip_address $IP_ADDR
 
 # Get XAP
 
-DIR=/tmp
+DIR=/home/vagrant/
 
 # check only needed for local cloud 
 if [ ! -d $DIR/xap ]; then
@@ -67,5 +67,10 @@ if [ ! -d $DIR/xap ]; then
   ctx download-resource "xap-scripts/nat-mapper.jar" "@{\"target_path\": \"$GSDIR/lib/required/nat-mapper.jar\"}"
 
 
+else
+  if [ ! -d /tmp/gsdir ]; then
+      GSDIR=`ls -d $DIR/xap/gigaspaces*premium*`
+      echo $GSDIR > /tmp/gsdir
+      ctx download-resource "xap-scripts/nat-mapper.jar" "@{\"target_path\": \"$GSDIR/lib/required/nat-mapper.jar\"}"
+  fi
 fi
-
