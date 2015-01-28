@@ -46,6 +46,7 @@ if [ -f "/tmp/locators" ]; then
   	LOOKUPLOCATORS=${LOOKUPLOCATORS%%,}  #trim trailing comma
 fi
 
+ctx logger info "LOOKUPLOCATORS: ${LOOKUPLOCATORS}"
 # Write empty NAT mapping file (required by mapper)
 echo > /tmp/network_mapping.config
 
@@ -60,6 +61,7 @@ else
 fi
 
 if [ "$PS" = "" ]; then  #no gsa running already
+	ctx logger info "NO GSA IS RUNNING!"
 	export LOOKUPLOCATORS
 	export NIC_ADDR=$LOOKUPLOCATORS
 
@@ -72,7 +74,7 @@ if [ "$PS" = "" ]; then  #no gsa running already
 	sleep 10
 
 else 
-
+	ctx logger info "THERE IS A RUNNUNG GSA!"
 	GROOVY=$XAPDIR/tools/groovy/bin/groovy
 
 	ctx logger info "GSA already running"

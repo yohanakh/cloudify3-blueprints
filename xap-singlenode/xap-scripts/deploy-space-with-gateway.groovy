@@ -60,6 +60,10 @@ def gsm=admin.gridServiceManagers.waitForAtLeastOne(1,TimeUnit.MINUTES)
 assert gsm!=null
 
 def pucfg=new ProcessingUnitConfig()
+pucfg.setClusterSchema("partitioned-sync2backup")
+pucfg.setNumberOfInstances(1)
+pucfg.setNumberOfBackups(1)
+
 pucfg.setProcessingUnit("/tmp/spacepu")
 pucfg.setName(spacename)
 

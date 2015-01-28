@@ -58,4 +58,4 @@ inputs:
         default: "['SITE-B']"
     xap_gateway_lookups:
         type: string
-        default: "[['gwname':'SITE-B','address':'127.0.0.1','discoport':10000,'commport':10001]]"
+        default: "[['gwname':'SITE-B','address':'11.0.0.8','discoport':10000,'commport':10001]]"
