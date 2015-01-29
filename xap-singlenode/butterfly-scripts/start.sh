@@ -5,8 +5,11 @@ function error_exit {
    exit ${1}
 }
 port=$(ctx node properties port) || error_exit $? "Unable to set port from properties"
+interfacename=$(ctx node properties interfacename)
+lrmi_comm_min_port=$(ctx node properties lrmi_comm_min_port)
+lrmi_comm_max_port=$(ctx node properties lrmi_comm_max_port)
 
-IP_ADDR=$(ip addr | grep inet | grep eth0 | awk -F" " '{print $2}'| sed -e 's/\/.*$//')
+IP_ADDR=$(ip addr | grep inet | grep ${interfacename} | awk -F" " '{print $2}'| sed -e 's/\/.*$//')
 GSDIR=`cat /tmp/gsdir`
 LOOKUPLOCATORS=$IP_ADDR
 if [ -f "/tmp/locators" ]; then

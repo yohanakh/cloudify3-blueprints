@@ -10,8 +10,8 @@ source ${CLOUDIFY_FILE_SERVER}
 wget -O /tmp/space-pu.jar "${CLOUDIFY_FILE_SERVER_BLUEPRINT_ROOT}/xap-scripts/space-pu.jar"
 
 XAPDIR=`cat /tmp/gsdir`  # left by install script
-
-IP_ADDR=$(ip addr | grep inet | grep eth0 | awk -F" " '{print $2}'| sed -e 's/\/.*$//')
+interfacename=$(ctx node properties interfacename)
+IP_ADDR=$(ip addr | grep inet | grep ${interfacename} | awk -F" " '{print $2}'| sed -e 's/\/.*$//')
 export LOOKUPLOCATORS=$IP_ADDR
 export ZONES=$zones
 if [ -f "/tmp/locators" ]; then

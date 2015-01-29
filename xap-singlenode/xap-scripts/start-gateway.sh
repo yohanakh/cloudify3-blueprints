@@ -10,6 +10,8 @@ sources=$(ctx node properties sources)
 targets=$(ctx node properties targets)
 lookups=$(ctx node properties lookups)
 GSC_JAVA_OPTIONS=$(ctx node properties GSC_JAVA_OPTIONS)
+restpu_zones=$(ctx node properties restpu_zones)
+space_zones=$(ctx node properties space_zones)
 
 ctx logger info "GOT LOOKUPS:[${lookups}], SOURCES:[$sources], TARGETS:[$targets], GSC_CNT:[$gsc_cnt], discport:[$discport]"
 
@@ -25,8 +27,9 @@ sudo ulimit -u 32000
 XAPDIR=`cat /tmp/gsdir`  # left by install script
 
 # Update IP
-IP_ADDR=$(ip addr | grep inet | grep eth0 | awk -F" " '{print $2}'| sed -e 's/\/.*$//')
-
+interfacename=$(ctx node properties interfacename)
+IP_ADDR=$(ip addr | grep inet | grep ${interfacename} | awk -F" " '{print $2}'| sed -e 's/\/.*$//')
+export NIC_ADDR=$IP_ADDR
 ctx logger info "About to post IP address ${IP_ADDR}"
 
 ctx instance runtime_properties "ip_address" $IP_ADDR
@@ -60,10 +63,11 @@ else
 	ZONES="${space_name}-gw"
 fi
 
+GROOVY=$XAPDIR/tools/groovy/bin/groovy
+
 if [ "$PS" = "" ]; then  #no gsa running already
 	ctx logger info "NO GSA IS RUNNING!"
 	export LOOKUPLOCATORS
-	export NIC_ADDR=$LOOKUPLOCATORS
 
 	GSC_JAVA_OPTIONS="$GSC_JAVA_OPTIONS -Dcom.gs.zones=${ZONES}"
 
@@ -75,15 +79,14 @@ if [ "$PS" = "" ]; then  #no gsa running already
 
 else 
 	ctx logger info "THERE IS A RUNNUNG GSA!"
-	GROOVY=$XAPDIR/tools/groovy/bin/groovy
 
 	ctx logger info "GSA already running"
 
 	EXT_JAVA_OPTIONS="${EXT_JAVA_OPTIONS} -Dcom.gs.zones=${ZONES}"
 
-	ctx logger info "calling:  $GROOVY /tmp/startgsc.groovy \"$JAVA_OPTIONS $EXT_JAVA_OPTIONS\""
+	ctx logger info "calling:  $GROOVY -Dinterfacename=\"${interfacename}\" -Dgsc_cnt=\"${gsc_cnt}\" /tmp/startgsc.groovy \"$GSC_JAVA_OPTIONS $EXT_JAVA_OPTIONS\""
 
-	$GROOVY /tmp/startgsc.groovy "$JAVA_OPTIONS $EXT_JAVA_OPTIONS"
+	$GROOVY -Dinterfacename="${interfacename}" -Dgsc_cnt="${gsc_cnt}" /tmp/startgsc.groovy "$GSC_JAVA_OPTIONS $EXT_JAVA_OPTIONS" > "/tmp/yohanakh.log"
 
 	ctx logger info "called startgsc"
 
@@ -95,8 +98,12 @@ fi
 lookups=${lookups%"]"}
 lookups="${lookups},[\"gwname\":\"$gwname\",\"address\":\"$IP_ADDR\",\"discoport\":$discport,\"commport\":$commport]]"
 
-ctx logger info "calling $GROOVY /tmp/deploy-space-with-gateway.groovy -DXAPDIR=\"$XAPDIR\" -Dlocallocators=\"$LOOKUPLOCATORS\""
-$GROOVY -DXAPDIR="$XAPDIR" -Dspacename="$space_name" -Dgwname="$gwname" -Dlocallocators="$LOOKUPLOCATORS" -Dxapdir="$XAPDIR" -Dtargets="$targets" /tmp/deploy-space-with-gateway.groovy
+ctx logger info "calling $GROOVY -DXAPDIR=\"$XAPDIR\" -Dspacename=\"$space_name\" -Dgwname=\"$gwname\" -Dlocallocators=\"$LOOKUPLOCATORS\" -Dxapdir=\"$XAPDIR\" -Dtargets=\"$targets\" -Dzones=\"${space_zones}\" /tmp/deploy-space-with-gateway.groovy"
+$GROOVY -DXAPDIR="$XAPDIR" -Dspacename="$space_name" -Dgwname="$gwname" -Dlocallocators="$LOOKUPLOCATORS" -Dxapdir="$XAPDIR" -Dtargets="$targets" -Dzones="${space_zones}" /tmp/deploy-space-with-gateway.groovy
+
+ctx logger info "$XAPDIR/bin/gs.sh deploy-rest -spacename $space_name -port 8888 -zones ${restpu_zones}"
+$XAPDIR/bin/gs.sh deploy-rest -spacename ${space_name} -port 8888 -zones ${restpu_zones}
+
 ctx logger info "$GROOVY -Dpuname=\"${space_name}-gw\" -Dspacename=\"${space_name}\" -Dzones=\"$ZONES\" -Dlocallocators=\"$LOOKUPLOCATORS\" -Dlocalgwname=\"${gwname}\" -Dtargets=\"${targets}\" -Dsources=\"${sources}\" -Dlookups=\"${lookups}\" -Dnatmappings=\"${nat_mappings}\"  /tmp/install_gateway.groovy"
 $GROOVY -Dpuname="${space_name}-gw" -Dspacename="${space_name}" -Dzones="$ZONES" -Dlocallocators="$LOOKUPLOCATORS" -Dlocalgwname="${gwname}" -Dtargets="${targets}" -Dsources="${sources}" -Dlookups="${lookups}" -Dnatmappings="${nat_mappings}"  /tmp/install_gateway.groovy
 

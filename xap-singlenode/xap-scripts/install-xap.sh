@@ -24,8 +24,10 @@ else
    sudo apt-get -qq -f --no-upgrade install unzip || exit $?
 fi
 
-# Set runtime properties 
-IP_ADDR=$(ip addr | grep inet | grep eth0 | awk -F" " '{print $2}'| sed -e 's/\/.*$//')
+# Set runtime properties
+interfacename=$(ctx node properties interfacename)
+ctx logger info "INTERFACENAME: ${interfacename}"
+IP_ADDR=$(ip addr | grep inet | grep ${interfacename} | awk -F" " '{print $2}'| sed -e 's/\/.*$//')
 ctx logger info "About to post IP address ${IP_ADDR}"
 
 ctx instance runtime-properties ip_address $IP_ADDR

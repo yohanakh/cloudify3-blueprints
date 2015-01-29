@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export LOOKUPGROUPS=
-export GSA_JAVA_OPTIONS=$(ctx node properties GSA_JAVA_OPTIONS)
+export GSA_JAVA_OPTIONS=$(ctx -node properties GSA_JAVA_OPTIONS)
 export LUS_JAVA_OPTIONS=$(ctx node properties LUS_JAVA_OPTIONS)
 export GSM_JAVA_OPTIONS=$(ctx node properties GSM_JAVA_OPTIONS)
 export GSC_JAVA_OPTIONS=$(ctx node properties GSC_JAVA_OPTIONS)
@@ -10,16 +10,18 @@ global_gsm_cnt=$(ctx -j node properties global_gsm_cnt)
 lus_cnt=$(ctx -j node properties lus_cnt)
 gsc_cnt=$(ctx -j node properties gsc_cnt)
 global_lus_cnt=$(ctx -j node properties global_lus_cnt)
-lrmi_comm_min_port=$(ctx -j node properties lrmi_comm_min_port)
-lrmi_comm_max_port=$(ctx -j node properties lrmi_comm_max_port)
-zones=$(ctx -j node properties zones)
+lrmi_comm_min_port=$(ctx node properties lrmi_comm_min_port)
+lrmi_comm_max_port=$(ctx node properties lrmi_comm_max_port)
+zones=$(ctx node properties zones)
+interfacename=$(ctx node properties interfacename)
+ctx download-resource xap-scripts/startgsc.groovy '@{"target_path": "/tmp/startgsc.groovy"}'
 
 sudo ulimit -n 32000
 sudo ulimit -u 32000
 
 XAPDIR=`cat /tmp/gsdir`  # left by install script
 
-ctx logger info gsm=$gsm_cnt gsc=$gsc_cnt lus=$lus_cnt
+ctx logger info "gsm=$gsm_cnt gsc=$gsc_cnt lus=$lus_cnt"
 
 ip=$(ctx instance runtime_properties ip_address)
 
@@ -61,7 +63,9 @@ else #running local cloud
 		echo $lus_cnt|$XAPDIR/bin/gs.sh gsa start-lus
 	fi
 	if [ $gsc_cnt -gt 0 ]; then
-		echo $gsc_cnt|$XAPDIR/bin/gs.sh gsa start-gsc
+		GROOVY=$XAPDIR/tools/groovy/bin/groovy
+		ctx logger info "RUNNING: $GROOVY -Dinterfacename=\"${interfacename}\" -Dgsc_cnt=\"${gsc_cnt}\" /tmp/startgsc.groovy \"$GSC_JAVA_OPTIONS $EXT_JAVA_OPTIONS\""
+		$GROOVY -Dinterfacename="${interfacename}" -Dgsc_cnt="${gsc_cnt}" /tmp/startgsc.groovy "$GSC_JAVA_OPTIONS $EXT_JAVA_OPTIONS" > "/tmp/yohanatemp$(date).log"
 	fi
 
 fi

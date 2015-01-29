@@ -8,8 +8,9 @@ MAX_PER_VM=$5
 MAX_PER_MACHINE=$5
 
 XAPDIR=`cat /tmp/gsdir`  # left by install script
+interfacename=$(ctx node properties interfacename)
 
-IP_ADDR=$(ip addr | grep inet | grep eth0 | awk -F" " '{print $2}'| sed -e 's/\/.*$//')
+IP_ADDR=$(ip addr | grep inet | grep ${interfacename} | awk -F" " '{print $2}'| sed -e 's/\/.*$//')
 export LOOKUPLOCATORS=$IP_ADDR
 export NIC_ADDR=$IP_ADDR
 if [ -f "/tmp/locators" ]; then

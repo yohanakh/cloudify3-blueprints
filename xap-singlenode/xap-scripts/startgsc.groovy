@@ -9,8 +9,10 @@ if(args.length>0){
 
 //Starts a GSC on the local node with args[0] specifying the
 //zone
-
-e=NetworkInterface.getByName("eth0").getInetAddresses()
+interfacename=System.getProperty("interfacename", "eth0")
+assert (System.getProperty("gsc_cnt") != null), "gsc_cnt cannot be empty"
+gsc_cnt=Integer.valueOf(System.getProperty("gsc_cnt"))
+e=NetworkInterface.getByName(interfacename).getInetAddresses()
 ip=null
 while(e.hasMoreElements()){
 	addr=e.nextElement()
@@ -25,6 +27,8 @@ admin.gridServiceAgents.waitForAtLeastOne()
 
 agt=admin.gridServiceAgents.agents[0]
 
+println "Should start " +gsc_cnt +" GSCs"
+for (int i=0; i<gsc_cnt ;i++) {
 opts=new GridServiceContainerOptions()
 if(vmargs!=null){
 	vmargs.each{
@@ -32,6 +36,8 @@ if(vmargs!=null){
 		opts.vmInputArgument(it)
 	}
 }
+println "STarting GSC"
+agt.startGridServiceAndWait(opts)
+}
 
-agt.startGridService(opts)
-
+println "Finished starting GSCs!"

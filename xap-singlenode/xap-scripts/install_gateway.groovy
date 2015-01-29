@@ -88,7 +88,7 @@ pucfg.setName(puname)
 pucfg.addZone(zones) //only deploy to this gsc
 
 def pu=gsm.deploy(pucfg,1,TimeUnit.MINUTES)
-
+admin.close()
 assert pu!=null,"timed out waiting for gateway deployment"
 
 // add gateway to space

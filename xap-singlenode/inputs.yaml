@@ -17,12 +17,15 @@ inputs:
     xap_management_gscs_count:
         description: The number of GSCs that should be started on the XAP_MANAGEMENT node
         type: integer
-        default: 0
+        default: 1
+    xap_management_zones:
+        type: string
+        default: restzone
 ##XAP_GRID NODE
     xap_grid_gscs_count:
         description: The number of GSCs that should be started on the XAP_GRID node
         type: integer
-        default: 1
+        default: 2
     xap_grid_zones:
         description: Comma separated list of zones
         type: string

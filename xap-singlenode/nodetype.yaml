@@ -30,6 +30,9 @@ node_types:
     xap_type:
         derived_from: cloudify.nodes.ApplicationServer
         properties:
+            interfacename:
+                type: string
+                default: 'eth1'
             GSA_JAVA_OPTIONS:
                 type: string
                 default: ''
@@ -79,6 +82,9 @@ node_types:
     xap_webui_type:
         derived_from: cloudify.nodes.WebServer
         properties:
+            interfacename:
+                type: string
+                default: 'eth1'
             webui_port:
                 type: integer
                 default: { get_input: xap_management_webui_port }
@@ -86,6 +92,9 @@ node_types:
     demo_shell_type:
         derived_from: cloudify.nodes.WebServer
         properties:
+            interfacename:
+                type: string
+                default: 'eth1'
             port:
                 type: integer
                 default: 8080
@@ -108,6 +117,12 @@ node_types:
             space_name:
                 type: string
                 default: { get_input: xap_gateway_spacename }
+            space_zones:
+                type: string
+                default: { get_input: xap_grid_zones }
+            restpu_zones:
+                type: string
+                default: { get_input: xap_management_zones }
             gsc_cnt:
                 type: integer
                 default: { get_input: xap_gateway_gscs_count }

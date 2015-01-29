@@ -45,7 +45,7 @@ node_templates:
                 gsm_cnt: 1
                 global_gsm_cnt: 0
                 gsc_cnt: { get_input: xap_management_gscs_count }
-                zones: { get_input: xap_grid_zones }
+                zones: { get_input: xap_management_zones }
                 GSM_JAVA_OPTIONS: -Xms128m -Xmx128m
             relationships:
                 -   target: xap_management_vm
@@ -91,6 +91,8 @@ node_templates:
             type: xap_gateway_type
             properties:
                 space_name: { get_input: xap_gateway_spacename }
+                space_zones: { get_input: xap_grid_zones }
+                restpu_zones: { get_input: xap_management_zones }
                 gsc_cnt: { get_input: xap_gateway_gscs_count }
                 zones: { get_input: xap_gateway_zones }
                 discport: { get_input: xap_gateway_discoport }
@@ -99,12 +101,14 @@ node_templates:
                 sources: { get_input: xap_gateway_sources }
                 targets: { get_input: xap_gateway_targets }
                 lookups: { get_input: xap_gateway_lookups }
-                GSC_JAVA_OPTIONS: -Xms128m -Xmx128m
+
             relationships:
                 -   target: xap_gateway_vm
                     type: cloudify.relationships.contained_in
                 -   target: xap_management
                     type: xap_connected_to_lus
+                -   target: xap_datagrid
+                    type: cloudify.relationships.depends_on
             interfaces:
                 cloudify.interfaces.lifecycle:
                   create: xap-scripts/install-xap.sh

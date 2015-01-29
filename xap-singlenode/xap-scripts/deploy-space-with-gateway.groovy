@@ -29,6 +29,7 @@ def gwname = System.getProperty("gwname")
 def targets = System.getProperty("targets")
 def xapdir = System.getProperty("XAPDIR")
 def locators = System.getProperty("locallocators")
+def zones= System.getProperty("zones")
 
 assert (spacename!=null),"space name must not be null"
 assert (gwname!=null),"no gwname"
@@ -60,6 +61,9 @@ def gsm=admin.gridServiceManagers.waitForAtLeastOne(1,TimeUnit.MINUTES)
 assert gsm!=null
 
 def pucfg=new ProcessingUnitConfig()
+if (zones != null) {
+    pucfg.setZones(zones.split(","))
+}
 pucfg.setClusterSchema("partitioned-sync2backup")
 pucfg.setNumberOfInstances(1)
 pucfg.setNumberOfBackups(1)
@@ -70,5 +74,5 @@ pucfg.setName(spacename)
 println "Deploying space..."
 def pu=gsm.deploy(pucfg,1,TimeUnit.MINUTES)
 
-
+admin.close()
 assert pu!=null,"timed out waiting for space deployment"
