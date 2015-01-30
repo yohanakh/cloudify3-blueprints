@@ -85,7 +85,9 @@ assert space!=null,"failed to locate space ${spacename}"
 def pucfg=new ProcessingUnitConfig()
 pucfg.setProcessingUnit("/tmp/gwpu")
 pucfg.setName(puname)
-pucfg.addZone(zones) //only deploy to this gsc
+if (zones != null && !zones.equals("")) {
+	pucfg.setZones(zones.split(",")) //only deploy to this gsc
+}
 
 def pu=gsm.deploy(pucfg,1,TimeUnit.MINUTES)
 admin.close()

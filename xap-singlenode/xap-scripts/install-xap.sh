@@ -34,7 +34,7 @@ ctx instance runtime-properties ip_address $IP_ADDR
 
 # Get XAP
 
-DIR=/home/vagrant/
+DIR=/tmp/
 
 # check only needed for local cloud 
 if [ ! -d $DIR/xap ]; then

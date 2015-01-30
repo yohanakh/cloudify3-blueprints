@@ -21,8 +21,8 @@ ctx download-resource xap-scripts/install_gateway.groovy '@{"target_path": "/tmp
 ctx download-resource xap-scripts/gateway-pu.xml '@{"target_path": "/tmp/gateway-pu.xml"}'
 ctx download-resource xap-scripts/space-pu.xml '@{"target_path": "/tmp/space-pu.xml"}'
 
-sudo ulimit -n 32000
-sudo ulimit -u 32000
+#sudo ulimit -n 32000
+#sudo ulimit -u 32000
 
 XAPDIR=`cat /tmp/gsdir`  # left by install script
 
@@ -48,7 +48,7 @@ if [ -f "/tmp/locators" ]; then
 	done
   	LOOKUPLOCATORS=${LOOKUPLOCATORS%%,}  #trim trailing comma
 fi
-
+export LOOKUPLOCATORS
 ctx logger info "LOOKUPLOCATORS: ${LOOKUPLOCATORS}"
 # Write empty NAT mapping file (required by mapper)
 echo > /tmp/network_mapping.config
@@ -67,7 +67,6 @@ GROOVY=$XAPDIR/tools/groovy/bin/groovy
 
 if [ "$PS" = "" ]; then  #no gsa running already
 	ctx logger info "NO GSA IS RUNNING!"
-	export LOOKUPLOCATORS
 
 	GSC_JAVA_OPTIONS="$GSC_JAVA_OPTIONS -Dcom.gs.zones=${ZONES}"
 
@@ -99,11 +98,16 @@ lookups=${lookups%"]"}
 lookups="${lookups},[\"gwname\":\"$gwname\",\"address\":\"$IP_ADDR\",\"discoport\":$discport,\"commport\":$commport]]"
 
 ctx logger info "calling $GROOVY -DXAPDIR=\"$XAPDIR\" -Dspacename=\"$space_name\" -Dgwname=\"$gwname\" -Dlocallocators=\"$LOOKUPLOCATORS\" -Dxapdir=\"$XAPDIR\" -Dtargets=\"$targets\" -Dzones=\"${space_zones}\" /tmp/deploy-space-with-gateway.groovy"
-$GROOVY -DXAPDIR="$XAPDIR" -Dspacename="$space_name" -Dgwname="$gwname" -Dlocallocators="$LOOKUPLOCATORS" -Dxapdir="$XAPDIR" -Dtargets="$targets" -Dzones="${space_zones}" /tmp/deploy-space-with-gateway.groovy
+$GROOVY -Djava.rmi.server.hostname="${NIC_ADDR}" -DXAPDIR="$XAPDIR" -Dspacename="$space_name" -Dgwname="$gwname" -Dlocallocators="$LOOKUPLOCATORS" -Dxapdir="$XAPDIR" -Dtargets="$targets" -Dzones="${space_zones}" /tmp/deploy-space-with-gateway.groovy
 
+ctx logger info "$GROOVY -Djava.rmi.server.hostname=\"${NIC_ADDR}\" -Dpuname=\"${space_name}-gw\" -Dspacename=\"${space_name}\" -Dzones=\"$ZONES\" -Dlocallocators=\"$LOOKUPLOCATORS\" -Dlocalgwname=\"${gwname}\" -Dtargets=\"${targets}\" -Dsources=\"${sources}\" -Dlookups=\"${lookups}\" -Dnatmappings=\"${nat_mappings}\"  /tmp/install_gateway.groovy"
+$GROOVY -Djava.rmi.server.hostname="${NIC_ADDR}" -Dpuname="${space_name}-gw" -Dspacename="${space_name}" -Dzones="$ZONES" -Dlocallocators="$LOOKUPLOCATORS" -Dlocalgwname="${gwname}" -Dtargets="${targets}" -Dsources="${sources}" -Dlookups="${lookups}" -Dnatmappings="${nat_mappings}"  /tmp/install_gateway.groovy
+
+export EXT_JAVA_OPTIONS=
+if [ -z "${restpu_zones}" ]; then
+ctx logger info "$XAPDIR/bin/gs.sh deploy-rest -spacename $space_name -port 8888"
+$XAPDIR/bin/gs.sh deploy-rest -spacename ${space_name} -port 8888
+else
 ctx logger info "$XAPDIR/bin/gs.sh deploy-rest -spacename $space_name -port 8888 -zones ${restpu_zones}"
 $XAPDIR/bin/gs.sh deploy-rest -spacename ${space_name} -port 8888 -zones ${restpu_zones}
-
-ctx logger info "$GROOVY -Dpuname=\"${space_name}-gw\" -Dspacename=\"${space_name}\" -Dzones=\"$ZONES\" -Dlocallocators=\"$LOOKUPLOCATORS\" -Dlocalgwname=\"${gwname}\" -Dtargets=\"${targets}\" -Dsources=\"${sources}\" -Dlookups=\"${lookups}\" -Dnatmappings=\"${nat_mappings}\"  /tmp/install_gateway.groovy"
-$GROOVY -Dpuname="${space_name}-gw" -Dspacename="${space_name}" -Dzones="$ZONES" -Dlocallocators="$LOOKUPLOCATORS" -Dlocalgwname="${gwname}" -Dtargets="${targets}" -Dsources="${sources}" -Dlookups="${lookups}" -Dnatmappings="${nat_mappings}"  /tmp/install_gateway.groovy
-
+fi

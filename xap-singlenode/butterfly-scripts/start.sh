@@ -41,7 +41,8 @@ source /tmp/virtenv_is/bin/activate
 UUID=`uuidgen`
 
 ctx logger info "launching butterfly server"
-nohup python /tmp/demodl/butterfly/butterfly.server.py --host="0.0.0.0" --port="$port" --unsecure --prompt_login=false --load_script="/tmp/demodl/XAP-Interactive-Tutorial-master/start_tutorial.sh" --wd="/tmp/demodl/XAP-Interactive-Tutorial-master" >/tmp/demodl.nohup.out $UUID 2>&1 &
+#--load_script="/tmp/demodl/XAP-Interactive-Tutorial-master/start_tutorial.sh"
+nohup python /tmp/demodl/butterfly/butterfly.server.py --host="0.0.0.0" --port="$port" --unsecure --prompt_login=false --wd="/tmp/demodl/XAP-Interactive-Tutorial-master" >/tmp/demodl.nohup.out $UUID 2>&1 &
 sleep 1
 ctx logger info "launched butterfly server"
 deactivate

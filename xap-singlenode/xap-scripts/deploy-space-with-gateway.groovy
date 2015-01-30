@@ -61,7 +61,7 @@ def gsm=admin.gridServiceManagers.waitForAtLeastOne(1,TimeUnit.MINUTES)
 assert gsm!=null
 
 def pucfg=new ProcessingUnitConfig()
-if (zones != null) {
+if (zones != null && !zones.equals("")) {
     pucfg.setZones(zones.split(","))
 }
 pucfg.setClusterSchema("partitioned-sync2backup")
