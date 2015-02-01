@@ -18,7 +18,7 @@ from cloudify.workflows import parameters as p
 
 instance = None
 for node in ctx.nodes:
-    if "xap_mgmt" == node.id:
+    if "xap_management" == node.id:
         for i in node.instances:
             instance=i
             break

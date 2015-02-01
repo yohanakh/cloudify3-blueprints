@@ -174,7 +174,7 @@ relationships:
      
 node_templates:
 
-         xap_mgmt_vm:
+         xap_management_vm:
             type: xap.monitoredServer
             properties:
                 ip: 127.0.0.1
@@ -190,7 +190,7 @@ node_templates:
                     key: /home/vagrant/.ssh/agent_key.pem
                     user: vagrant
 
-         xap_mgmt:
+         xap_management:
             type: xap_type
             properties:
                 lus_cnt: 1
@@ -200,7 +200,7 @@ node_templates:
                 gsc_cnt: 0
                 GSM_JAVA_OPTIONS: -Xms128m -Xmx128m
             relationships:
-                -   target: xap_mgmt_vm
+                -   target: xap_management_vm
                     type: cloudify.relationships.contained_in
             interfaces:
                 admin.commands:
@@ -231,7 +231,7 @@ node_templates:
             relationships:
                 -   target: xap_container_vm
                     type: cloudify.relationships.contained_in
-                -   target: xap_mgmt
+                -   target: xap_management
                     type: xap_connected_to_lus
             interfaces:
                 cloudify.interfaces.lifecycle:
@@ -246,9 +246,9 @@ node_templates:
                   start: xap-scripts/start-ui.sh
                   stop: xap-scripts/stop-ui.sh
             relationships:
-                - target: xap_mgmt_vm
+                - target: xap_management_vm
                   type: cloudify.relationships.contained_in
-                - target: xap_mgmt
+                - target: xap_management
                   type: cloudify.relationships.depends_on
 
          demo_shell:
@@ -258,15 +258,15 @@ node_templates:
                   create: butterfly-scripts/install.sh
                   start: butterfly-scripts/start.sh
             relationships:
-                - target: xap_mgmt_vm
+                - target: xap_management_vm
                   type: cloudify.relationships.contained_in
-                - target: xap_mgmt
+                - target: xap_management
                   type: cloudify.relationships.depends_on
 
 
 groups:
     autohealing_group:
-      members: [xap_mgmt_vm,xap_container_vm,webui]
+      members: [xap_management_vm,xap_container_vm,webui]
       policies:
         simple_autoheal_policy:
           type: cloudify.policies.types.host_failure
@@ -288,6 +288,6 @@ outputs:
     management_ui:
       description: XAP UI URL
       value:
-        ip: {  get_attribute: [ xap_mgmt_vm,  ip_address ] }
+        ip: {  get_attribute: [ xap_management_vm,  ip_address ] }
         port: 7104
 

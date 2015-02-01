@@ -113,7 +113,7 @@ relationships:
 blueprint:
     name: xap
     nodes:
-        -   name: xap_mgmt_vm
+        -   name: xap_management_vm
             type: cloudify.types.host
             properties:
                 ip: 127.0.0.1
@@ -129,7 +129,7 @@ blueprint:
                     key: /home/vagrant/.ssh/insecure_private_key
                     user: vagrant
 
-        -   name: xap_mgmt
+        -   name: xap_management
             type: xap_type
             properties:
                 lus_cnt: 1
@@ -139,7 +139,7 @@ blueprint:
                 LUS_JAVA_OPTIONS: -Xms128m -Xmx128m
                 GSC_JAVA_OPTIONS: -Xms128m -Xmx128m -Dcom.gs.zones=space
             relationships:
-                -   target: xap_mgmt_vm
+                -   target: xap_management_vm
                     type: cloudify.relationships.contained_in
             interfaces:
                 admin.commands:
@@ -162,9 +162,9 @@ blueprint:
                 scripts:
                     start: xap-scripts/start-ui.sh
             relationships:
-                -   target: xap_mgmt_vm
+                -   target: xap_management_vm
                     type: cloudify.relationships.contained_in
-                -   target: xap_mgmt
+                -   target: xap_management
                     type: cloudify.relationships.depends_on
 
         -   name: space-a
@@ -175,9 +175,9 @@ blueprint:
                 site_name: SITE-A
                 cluster_info: "schema=partitioned-sync2backup total_members=1,0"
             relationships:
-                -   target: xap_mgmt_vm
+                -   target: xap_management_vm
                     type: cloudify.relationships.contained_in
-                -   target: xap_mgmt
+                -   target: xap_management
                     type: cloudify.relationships.depends_on
             
         -   name: xap_gateway
@@ -192,8 +192,8 @@ blueprint:
             relationships:
                 -   target: xap_container_vm
                     type: cloudify.relationships.contained_in
-                -   target: xap_mgmt
+                -   target: xap_management
                     type: cloudify.relationships.depends_on
-                -   target: xap_mgmt
+                -   target: xap_management
                     type: xap_connected_to_lus
 

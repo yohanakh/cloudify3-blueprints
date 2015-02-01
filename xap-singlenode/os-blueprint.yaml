@@ -181,11 +181,11 @@ relationships:
                     inputs: {}
      
 node_templates:
-        xap_mgmt_security_group:
+        xap_management_security_group:
             type: cloudify.openstack.nodes.SecurityGroup
             properties:
                 security_group:
-                    name: xap_mgmt_security_group
+                    name: xap_management_security_group
                 rules:
                     - remote_ip_prefix: 0.0.0.0/0
                       port: 8099
@@ -237,7 +237,7 @@ node_templates:
                       port_range_min: 7102
                       port_range_max: 7104
 
-        xap_mgmt_vm:
+        xap_management_vm:
             type: vm_host
             instances:
                 deploy: 1
@@ -245,11 +245,11 @@ node_templates:
               server:
                   image: "d81ccdfe-7482-460e-a7ce-69ea29aa129b"
                   flavor: "ba4e08fd-e4c5-4233-a906-f1bb31cb659d"
-                  security_groups: ['xap_mgmt_security_group']
+                  security_groups: ['xap_management_security_group']
             relationships:
                 - target: floatingip
                   type: cloudify.openstack.server_connected_to_floating_ip
-                - target: xap_mgmt_security_group
+                - target: xap_management_security_group
                   type: cloudify.relationships.depends_on
 
         floatingip:
@@ -268,7 +268,7 @@ node_templates:
                 - target: xap_container_security_group
                   type: cloudify.relationships.depends_on
 
-        xap_mgmt:
+        xap_management:
             type: xap_type
             properties:
                 lus_cnt: 1
@@ -278,7 +278,7 @@ node_templates:
                 gsc_cnt: 0
                 GSM_JAVA_OPTIONS: -Xms128m -Xmx128m
             relationships:
-                -   target: xap_mgmt_vm
+                -   target: xap_management_vm
                     type: cloudify.relationships.contained_in
             interfaces:
                 admin.commands:
@@ -309,7 +309,7 @@ node_templates:
             relationships:
                 -   target: xap_container_vm
                     type: cloudify.relationships.contained_in
-                -   target: xap_mgmt
+                -   target: xap_management
                     type: xap_connected_to_lus
             interfaces:
                 cloudify.interfaces.lifecycle:
@@ -324,9 +324,9 @@ node_templates:
                   start: xap-scripts/start-ui.sh
                   stop: xap-scripts/stop-ui.sh
             relationships:
-                - target: xap_mgmt_vm
+                - target: xap_management_vm
                   type: cloudify.relationships.contained_in
-                - target: xap_mgmt
+                - target: xap_management
                   type: cloudify.relationships.depends_on
 
         demo_shell:
@@ -336,16 +336,16 @@ node_templates:
                   create: butterfly-scripts/install.sh
                   start: butterfly-scripts/start.sh
             relationships:
-                - target: xap_mgmt_vm
+                - target: xap_management_vm
                   type: cloudify.relationships.contained_in
-                - target: xap_mgmt
+                - target: xap_management
                   type: cloudify.relationships.depends_on
 
 
 groups:
 
     autohealing_group':
-      members: [xap_mgmt_vm,xap_container_vm,webui]
+      members: [xap_management_vm,xap_container_vm,webui]
       policies:
         simple_autoheal_policy:
           type: cloudify.policies.types.host_failure
@@ -367,6 +367,6 @@ outputs:
     management_ui:
       description: XAP UI URL
       value:
-        ip: {  get_attribute: [ xap_mgmt_vm,  ip_address ] }
+        ip: {  get_attribute: [ xap_management_vm,  ip_address ] }
         port: 7104
 
