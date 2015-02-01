@@ -72,8 +72,7 @@ if [ "$PS" = "" ]; then  #no gsa running already
 
 	ctx logger info "running gs-agent.sh from $CLOUDIFY_NODE_ID"
 
-	nohup $XAPDIR/bin/gs-agent.sh gsa.global.lus=0 gsa.lus=0 gsa.global.gsm=0 gsa.gsm 0 gsa.gsc=1 2>&1 >/tmp/xap.nohup.out &
-
+	nohup $XAPDIR/bin/gs-agent.sh gsa.global.lus=0 gsa.lus=0 gsa.global.gsm=0 gsa.gsm 0 gsa.gsc=1 >/tmp/xap.nohup.out 2>&1 &
 	sleep 10
 
 else 
