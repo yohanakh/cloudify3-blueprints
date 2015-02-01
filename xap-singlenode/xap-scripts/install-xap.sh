@@ -66,13 +66,13 @@ if [ ! -d $DIR/xap ]; then
 
   # add dynamic nat mapper (needed for gateway)
 
-  ctx download-resource "xap-scripts/nat-mapper.jar" "@{\"target_path\": \"$GSDIR/lib/required/nat-mapper.jar\"}"
+  ctx download-resource "xap-scripts/nat-mapper.jar" "@{\"target_path\": \"$GSDIR/lib/platform/ext/nat-mapper.jar\"}"
 
 
 else
   if [ ! -d /tmp/gsdir ]; then
       GSDIR=`ls -d $DIR/xap/gigaspaces*premium*`
       echo $GSDIR > /tmp/gsdir
-      ctx download-resource "xap-scripts/nat-mapper.jar" "@{\"target_path\": \"$GSDIR/lib/required/nat-mapper.jar\"}"
+      ctx download-resource "xap-scripts/nat-mapper.jar" "@{\"target_path\": \"$GSDIR/lib/platform/ext/nat-mapper.jar\"}"
   fi
 fi

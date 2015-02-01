@@ -55,8 +55,8 @@ echo > /tmp/network_mapping.config
 
 PS=`ps -eaf|grep -v grep|grep GSA`
 
-export EXT_JAVA_OPTIONS="-Dcom.gs.multicast.enabled=false -Dcom.gs.transport_protocol.lrmi.bind-port=${commport} -Dcom.sun.jini.reggie.initialUnicastDiscoveryPort=${discport} -Dcom.gs.transport_protocol.lrmi.network-mapping-file=/tmp/network_mapping.config -Dcom.gs.transport_protocol.lrmi.network-mapper=org.openspaces.repl.natmapper.ReplNatMapper"
-
+export EXT_JAVA_OPTIONS="-Dcom.gs.multicast.enabled=false -Dcom.sun.jini.reggie.initialUnicastDiscoveryPort=${discport} -Dcom.gs.transport_protocol.lrmi.network-mapping-file=/tmp/network_mapping.config -Dcom.gs.transport_protocol.lrmi.network-mapper=org.openspaces.repl.natmapper.ReplNatMapper"
+export GSC_JAVA_OPTIONS="$GSC_JAVA_OPTIONS -Dcom.gs.transport_protocol.lrmi.bind-port=${commport}"
 if [ -n "${zones}" ]; then
 	ZONES=$zones
 else
@@ -68,7 +68,7 @@ GROOVY=$XAPDIR/tools/groovy/bin/groovy
 if [ "$PS" = "" ]; then  #no gsa running already
 	ctx logger info "NO GSA IS RUNNING!"
 
-	GSC_JAVA_OPTIONS="$GSC_JAVA_OPTIONS -Dcom.gs.zones=${ZONES}"
+	export GSC_JAVA_OPTIONS="$GSC_JAVA_OPTIONS -Dcom.gs.zones=${ZONES}"
 
 	ctx logger info "running gs-agent.sh from $CLOUDIFY_NODE_ID"
 
@@ -103,7 +103,7 @@ $GROOVY -Djava.rmi.server.hostname="${NIC_ADDR}" -DXAPDIR="$XAPDIR" -Dspacename=
 ctx logger info "$GROOVY -Djava.rmi.server.hostname=\"${NIC_ADDR}\" -Dpuname=\"${space_name}-gw\" -Dspacename=\"${space_name}\" -Dzones=\"$ZONES\" -Dlocallocators=\"$LOOKUPLOCATORS\" -Dlocalgwname=\"${gwname}\" -Dtargets=\"${targets}\" -Dsources=\"${sources}\" -Dlookups=\"${lookups}\" -Dnatmappings=\"${nat_mappings}\"  /tmp/install_gateway.groovy"
 $GROOVY -Djava.rmi.server.hostname="${NIC_ADDR}" -Dpuname="${space_name}-gw" -Dspacename="${space_name}" -Dzones="$ZONES" -Dlocallocators="$LOOKUPLOCATORS" -Dlocalgwname="${gwname}" -Dtargets="${targets}" -Dsources="${sources}" -Dlookups="${lookups}" -Dnatmappings="${nat_mappings}"  /tmp/install_gateway.groovy
 
-export EXT_JAVA_OPTIONS=
+#export EXT_JAVA_OPTIONS=
 if [ -z "${restpu_zones}" ]; then
 ctx logger info "$XAPDIR/bin/gs.sh deploy-rest -spacename $space_name -port 8888"
 $XAPDIR/bin/gs.sh deploy-rest -spacename ${space_name} -port 8888

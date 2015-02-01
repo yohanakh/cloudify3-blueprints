@@ -27,7 +27,7 @@ if(sources.size()>0)isSink=true
 
 if(isSource){
         println """\
-        <os-gateway:delegator id="delegator" start-embedded-lus="false"
+        <os-gateway:delegator id="delegator"
         local-gateway-name="${localgwname}" gateway-lookups="gatewayLookups">
         <os-gateway:delegations> """
 

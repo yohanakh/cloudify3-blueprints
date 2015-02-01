@@ -22,7 +22,7 @@ fi
 
 export LOOKUPLOCATORS
 export NIC_ADDR=${IP_ADDR}
-export GS_GROOVY_HOME=$GSDIR/tools/groovy/
+#export GS_GROOVY_HOME=$GSDIR/tools/groovy/
 export LRMI_COMM_MIN_PORT=$lrmi_comm_min_port
 export LRMI_COMM_MAX_PORT=$lrmi_comm_max_port
 
