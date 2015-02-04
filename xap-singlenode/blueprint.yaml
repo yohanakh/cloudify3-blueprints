@@ -93,6 +93,9 @@ node_types:
     xap_type:
         derived_from: cloudify.nodes.ApplicationServer
         properties:
+            interfacename:
+                type: string
+                default: 'eth1'
             GSA_JAVA_OPTIONS:
                 type: string
                 default: ''
@@ -125,7 +128,7 @@ node_types:
                 default: ''
             download_url:
                 type: string
-                default: http://gigaspaces-repository-eu.s3.amazonaws.com/com/gigaspaces/xap-core/10.1.0-SNAPSHOT/gigaspaces-xap-premium-10.1.0-m4-b12584-514.zip
+                default: http://11.0.0.1:8000/xap.zip
             license_key:
                 type: string
                 default: ''
@@ -139,6 +142,9 @@ node_types:
     xap_webui_type:
         derived_from: cloudify.nodes.WebServer
         properties:
+            interfacename:
+                type: string
+                default: 'eth1'
             webui_port:
                 type: integer
                 default: 9099
@@ -146,6 +152,9 @@ node_types:
     demo_shell_type:
         derived_from: cloudify.nodes.WebServer
         properties:
+            interfacename:
+                type: string
+                default: 'eth1'
             port:
                 type: integer
                 default: 8080

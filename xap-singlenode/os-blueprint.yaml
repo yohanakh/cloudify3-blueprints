@@ -101,6 +101,9 @@ node_types:
     xap_type:
         derived_from: cloudify.nodes.ApplicationServer
         properties:
+            interfacename:
+                type: string
+                default: 'eth0'
             GSA_JAVA_OPTIONS:
                 type: string
                 default: ''
@@ -147,6 +150,9 @@ node_types:
     xap_webui_type:
         derived_from: cloudify.nodes.WebServer
         properties:
+            interfacename:
+                type: string
+                default: 'eth0'
             webui_port:
                 type: integer
                 default: 9099
@@ -154,6 +160,9 @@ node_types:
     demo_shell_type:
         derived_from: cloudify.nodes.WebServer
         properties:
+            interfacename:
+                type: string
+                default: 'eth0'
             port:
                 type: integer
                 default: 8080
