@@ -16,6 +16,7 @@
 from cloudify.workflows import ctx
 from cloudify.workflows import parameters as p
 
+graph = ctx.graph_mode()
 instance = None
 for node in ctx.nodes:
     if "xap_management" == node.id:
@@ -24,7 +25,19 @@ for node in ctx.nodes:
             break
         break
 
+
+sequence = graph.sequence()
 ctx.logger.info("executing instance {}".format(instance))
 
-instance.execute_operation("admin.commands.undeploy_grid", kwargs={'grid_name': p.grid_name})
+sequence.add(
+    instance.send_event('Starting to run operation'),
+    instance.execute_operation("admin.commands.deploy_gateway_space"),
+    instance.send_event('Done running operation'),
+    instance.execute_operation("admin.commands.deploy_gateway_pu"),
+    instance.send_event('Done running operation'),
+    instance.execute_operation("admin.commands.deploy_rest"),
+    instance.send_event('Done running operation')
+)
 
+
+graph.execute()

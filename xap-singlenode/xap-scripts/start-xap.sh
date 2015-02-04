@@ -35,6 +35,10 @@ if [ -f "/tmp/locators" ]; then
 	done
   	LOOKUPLOCATORS=${LOOKUPLOCATORS%%,}  #trim trailing comma
 fi
+if [ "$lus_cnt" != 0 ]; then
+	echo "${IP_ADDR}" >> /tmp/locators
+	LOOKUPLOCATORS="${IP_ADDR},${LOOKUPLOCATORS}"
+fi
 
 export LOOKUPLOCATORS
 export NIC_ADDR=${IP_ADDR}

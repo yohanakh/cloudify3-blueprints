@@ -20,10 +20,13 @@ instance = None
 for node in ctx.nodes:
     if "xap_management" == node.id:
         for i in node.instances:
-            instance=i
+            instance = i
             break
         break
 
 ctx.logger.info("executing instance {}".format(instance))
 
-instance.execute_operation("admin.commands.deploy_grid",kwargs={'grid_name':p.grid_name, 'schema':p.schema,'partitions':p.partitions, 'backups':p.backups,'max_per_vm':p.max_per_vm, 'max_per_machine':p.max_per_machine})
+instance.execute_operation("admin.commands.deploy_grid",
+                           kwargs={'grid_name': p.grid_name, 'schema': p.schema, 'partitions': p.partitions,
+                                   'backups': p.backups, 'max_per_vm': p.max_per_vm,
+                                   'max_per_machine': p.max_per_machine})

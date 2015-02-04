@@ -18,13 +18,17 @@ import subprocess
 import urllib
 import os
 
+
 @operation
 def deploy_grid(ctx, **kwargs):
     script = kwargs['script']
     script_path = ctx.download_resource(script)
     subprocess.check_call(["chmod", "777", script_path])
-    output = subprocess.check_output([script_path, kwargs["grid_name"], kwargs["schema"], str(kwargs["partitions"]), str(kwargs["backups"]), str(kwargs["max_per_vm"]), str(kwargs["max_per_machine"])])
+    output = subprocess.check_output(
+        [script_path, kwargs["grid_name"], kwargs["schema"], str(kwargs["partitions"]), str(kwargs["backups"]),
+         str(kwargs["max_per_vm"]), str(kwargs["max_per_machine"])])
     ctx.logger.info(script_path + " output:" + output)
+
 
 @operation
 def undeploy_grid(ctx, **kwargs):
@@ -33,6 +37,7 @@ def undeploy_grid(ctx, **kwargs):
     subprocess.check_call(["chmod", "777", script_path])
     output = subprocess.check_output([script_path, kwargs["grid_name"]])
     ctx.logger.info(script_path + " output:" + output)
+
 
 @operation
 def deploy_pu(ctx, **kwargs):
@@ -52,8 +57,7 @@ def deploy_pu(ctx, **kwargs):
         pu_name = jar_name.split(".jar")[0]
 
     output = subprocess.check_output([script_path, pu_location, pu_name, kwargs["schema"],
-                                      str(kwargs["partitions"]), str(kwargs["backups"]), str(kwargs["max_per_vm"]), str(kwargs["max_per_machine"])])
+                                      str(kwargs["partitions"]), str(kwargs["backups"]), str(kwargs["max_per_vm"]),
+                                      str(kwargs["max_per_machine"])])
     ctx.logger.info(script_path + " output:" + output)
-
-
 

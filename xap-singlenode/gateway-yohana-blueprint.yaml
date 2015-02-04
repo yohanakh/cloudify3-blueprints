@@ -64,6 +64,10 @@ node_templates:
                       implementation: xap_admin_plugin.xap_admin_plugin.tasks.deploy_pu
                       inputs:
                           script: xap-scripts/deploy-pu.sh
+                  deploy_gateway_space:
+                      implementation: xap_plugin.xap_operations.gateway_operations.deploy_gateway_space
+                  deploy_rest:
+                      implementation: xap_plugin.xap_operations.gateway_operations.deploy_rest
 
                 cloudify.interfaces.lifecycle:
                   create: xap-scripts/install-xap.sh
@@ -90,17 +94,8 @@ node_templates:
          xap_gateway:
             type: xap_gateway_type
             properties:
-                space_name: { get_input: xap_gateway_spacename }
-                space_zones: { get_input: xap_grid_zones }
-                restpu_zones: { get_input: xap_management_zones }
                 gsc_cnt: { get_input: xap_gateway_gscs_count }
                 zones: { get_input: xap_gateway_zones }
-                discport: { get_input: xap_gateway_discoport }
-                commport: { get_input: xap_gateway_commport }
-                gwname: { get_input: xap_gateway_gwname }
-                sources: { get_input: xap_gateway_sources }
-                targets: { get_input: xap_gateway_targets }
-                lookups: { get_input: xap_gateway_lookups }
 
             relationships:
                 -   target: xap_gateway_vm
@@ -110,6 +105,9 @@ node_templates:
                 -   target: xap_datagrid
                     type: cloudify.relationships.depends_on
             interfaces:
+                admin.commands:
+                  deploy_gateway_pu:
+                      implementation: xap_plugin.xap_operations.gateway_operations.deploy_gateway_pu
                 cloudify.interfaces.lifecycle:
                   create: xap-scripts/install-xap.sh
                   start: xap-scripts/start-gateway.sh
@@ -158,12 +156,4 @@ groups:
                     get_property: ['SELF', 'failing_node']
                   diagnose_value:
                     get_property: ['SELF', 'diagnose']
-
-outputs:
-
-    management_ui:
-      description: XAP UI URL
-      value:
-        ip: {  get_attribute: [ xap_management_vm,  ip_address ] }
-        port: 7104
 

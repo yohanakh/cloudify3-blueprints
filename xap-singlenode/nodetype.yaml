@@ -68,7 +68,7 @@ node_types:
                 default: ''
             download_url:
                 type: string
-                default: 'http://gigaspaces-repository-eu.s3.amazonaws.com/com/gigaspaces/xap-core/10.1.0-SNAPSHOT/gigaspaces-xap-premium-10.1.0-m4-b12584-514.zip'
+                default: 'http://tarzan/builds/GigaSpacesBuilds/10.1.0/build_12592-31/xap-premium/1.5/gigaspaces-xap-premium-10.1.0-m11-b12592-31.zip'
             license_key:
                 type: string
                 default: ''
@@ -114,38 +114,18 @@ node_types:
     xap_gateway_type:
         derived_from: xap_type
         properties:
-            space_name:
-                type: string
-                default: { get_input: xap_gateway_spacename }
-            space_zones:
-                type: string
-                default: { get_input: xap_grid_zones }
-            restpu_zones:
-                type: string
-                default: { get_input: xap_management_zones }
             gsc_cnt:
                 type: integer
                 default: { get_input: xap_gateway_gscs_count }
             zones:
                 type: string
                 default: { get_input: xap_gateway_zones }
-            discport:
+            lrmi_comm_min_port:
                 type: integer
-                default: { get_input: xap_gateway_discoport }
-            commport:
+                default: { get_input: lrmi_comm_min_port }
+            lrmi_comm_max_port:
                 type: integer
-                default: { get_input: xap_gateway_commport }
-            gwname:
-                type: string
-                default: { get_input: xap_gateway_gwname }
-            sources:
-                type: string
-                default: { get_input: xap_gateway_sources }
-            targets:
-                type: string
-                default: { get_input: xap_gateway_targets }
-            lookups:
-                default: { get_input: xap_gateway_lookups }
+                default: { get_input: lrmi_comm_max_port }
 
     xap_datagrid_type:
         derived_from: xap_type

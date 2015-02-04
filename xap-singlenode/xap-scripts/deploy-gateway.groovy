@@ -13,15 +13,14 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 *******************************************************************************/
-import java.util.concurrent.TimeUnit
-import java.util.UUID
-import org.openspaces.admin.AdminFactory
-import org.openspaces.admin.application.config.ApplicationConfig
-import org.openspaces.admin.pu.config.ProcessingUnitConfig
-import org.openspaces.admin.space.SpaceDeployment
+
+import groovy.json.JsonSlurper
 import groovy.text.SimpleTemplateEngine
-import org.openspaces.core.gateway.GatewayTarget
+import org.openspaces.admin.AdminFactory
+import org.openspaces.admin.pu.config.ProcessingUnitConfig
 import org.openspaces.admin.space.Space
+
+import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 
 def puname=System.getProperty("puname")
@@ -46,13 +45,14 @@ new AntBuilder().sequential(){
 	delete(dir:pudir)
 	mkdir(dir:pudir)
 }
+def slurper = new JsonSlurper()
 
 def binding=[:]
 binding['localgwname']=localgwname
 binding['localspaceurl']="jini://*/*/${spacename}?locators=${locallocators}"
-binding['lookups']=Eval.me(lookups)
-binding['targets']=Eval.me(targets)
-binding['sources']=Eval.me(sources)
+binding['lookups']= slurper.parseText(lookups)
+binding['targets']= slurper.parseText(targets)
+binding['sources']= slurper.parseText(sources)
 
 def engine = new SimpleTemplateEngine()
 def putemplate = new File('/tmp/gateway-pu.xml')
@@ -66,6 +66,7 @@ if(natmappings!=null && natmappings.size()>0){
    new File("/tmp/network_mapping.config").withPrintWriter{out ->
 	for(int i=0;i<nm.size();i+=2){
 		out.println "${nm[i]},${nm[i+1]}"
+		println "ADDING: [${nm[i]},${nm[i+1]}]"
 	}
    }
 }
