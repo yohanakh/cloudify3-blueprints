@@ -31,7 +31,9 @@ LOOKUPLOCATORS=$IP_ADDR  #default to local
 if [ -f "/tmp/locators" ]; then
 	LOOKUPLOCATORS=""
 	for line in $(cat /tmp/locators); do
-		LOOKUPLOCATORS="${LOOKUPLOCATORS}${line},"
+		if [ "$line" != "$IP_ADDR" ]; then
+			LOOKUPLOCATORS="${LOOKUPLOCATORS}${line},"
+		fi
 	done
   	LOOKUPLOCATORS=${LOOKUPLOCATORS%%,}  #trim trailing comma
 fi
@@ -69,7 +71,7 @@ else #running local cloud
 	if [ $gsc_cnt -gt 0 ]; then
 		GROOVY=$XAPDIR/tools/groovy/bin/groovy
 		ctx logger info "RUNNING: $GROOVY -Dinterfacename=\"${interfacename}\" -Dgsc_cnt=\"${gsc_cnt}\" /tmp/startgsc.groovy \"$GSC_JAVA_OPTIONS $EXT_JAVA_OPTIONS\""
-		$GROOVY -Dinterfacename="${interfacename}" -Dgsc_cnt="${gsc_cnt}" /tmp/startgsc.groovy "$GSC_JAVA_OPTIONS $EXT_JAVA_OPTIONS" > "/tmp/yohanatemp$(date).log"
+		$GROOVY /tmp/startgsc.groovy ${interfacename} ${gsc_cnt} "$GSC_JAVA_OPTIONS $EXT_JAVA_OPTIONS" > "/tmp/startgsc_xap$(date).log"
 	fi
 
 fi

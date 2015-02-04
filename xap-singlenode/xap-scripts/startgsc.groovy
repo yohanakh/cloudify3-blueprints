@@ -1,17 +1,23 @@
 import org.openspaces.admin.AdminFactory
 import org.openspaces.admin.gsa.GridServiceContainerOptions
 import java.net.NetworkInterface
+import java.util.concurrent.TimeUnit
 
-vmargs=null
-if(args.length>0){
-	vmargs=args[0].trim().split(" ")
+if (args.length != 3) {
+	System.err.println("Should provide arguments in the following order: interfacename gsc_count GSC_JAVA_OPTIONS. Found: "+args);
+	System.exit(1);
 }
 
-//Starts a GSC on the local node with args[0] specifying the
-//zone
-interfacename=System.getProperty("interfacename", "eth0")
-assert (System.getProperty("gsc_cnt") != null), "gsc_cnt cannot be empty"
-gsc_cnt=Integer.valueOf(System.getProperty("gsc_cnt"))
+interfacename=args[0]
+int gsc_cnt;
+try {
+	gsc_cnt = Integer.valueOf(args[1])
+} catch (NumberFormatException e) {
+	System.err.println("gsc_count must be number")
+	System.exit(1);
+}
+vmargs=args[2].trim().split(" ")
+
 e=NetworkInterface.getByName(interfacename).getInetAddresses()
 ip=null
 while(e.hasMoreElements()){
@@ -27,7 +33,7 @@ admin.gridServiceAgents.waitForAtLeastOne()
 
 agt=admin.gridServiceAgents.agents[0]
 
-println "Should start " +gsc_cnt +" GSCs"
+println "Starting " +gsc_cnt +" GSCs"
 for (int i=0; i<gsc_cnt ;i++) {
 opts=new GridServiceContainerOptions()
 if(vmargs!=null){
@@ -36,8 +42,8 @@ if(vmargs!=null){
 		opts.vmInputArgument(it)
 	}
 }
-println "STarting GSC"
-agt.startGridServiceAndWait(opts)
+gsc = agt.startGridServiceAndWait(opts, 1, TimeUnit.MINUTES);
+	assert (gsc != null), "Failed to start GSC within 1 minute"
 }
 
-println "Finished starting GSCs!"
+println "Finished starting GSCs"

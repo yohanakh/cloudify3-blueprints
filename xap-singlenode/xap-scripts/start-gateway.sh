@@ -72,7 +72,7 @@ else
 
 	ctx logger info "calling:  $GROOVY -Dinterfacename=\"${interfacename}\" -Dgsc_cnt=\"${gsc_cnt}\" /tmp/startgsc.groovy \"$GSC_JAVA_OPTIONS $EXT_JAVA_OPTIONS\""
 
-	$GROOVY -Dinterfacename="${interfacename}" -Dgsc_cnt="${gsc_cnt}" /tmp/startgsc.groovy "$GSC_JAVA_OPTIONS $EXT_JAVA_OPTIONS" > "/tmp/yohanakh.log"
+	$GROOVY /tmp/startgsc.groovy ${interfacename} ${gsc_cnt} "$GSC_JAVA_OPTIONS $EXT_JAVA_OPTIONS" > "/tmp/startgsc_gateway$(date).log"
 
 	ctx logger info "called startgsc"
 
