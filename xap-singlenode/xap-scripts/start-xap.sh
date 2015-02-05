@@ -70,7 +70,7 @@ else #running local cloud
 	fi
 	if [ $gsc_cnt -gt 0 ]; then
 		GROOVY=$XAPDIR/tools/groovy/bin/groovy
-		ctx logger info "RUNNING: $GROOVY -Dinterfacename=\"${interfacename}\" -Dgsc_cnt=\"${gsc_cnt}\" /tmp/startgsc.groovy \"$GSC_JAVA_OPTIONS $EXT_JAVA_OPTIONS\""
+		ctx logger info "calling:  $GROOVY /tmp/startgsc.groovy ${interfacename} ${gsc_cnt} \"$GSC_JAVA_OPTIONS $EXT_JAVA_OPTIONS\""
 		$GROOVY /tmp/startgsc.groovy ${interfacename} ${gsc_cnt} "$GSC_JAVA_OPTIONS $EXT_JAVA_OPTIONS" > "/tmp/startgsc_xap$(date).log"
 	fi
 

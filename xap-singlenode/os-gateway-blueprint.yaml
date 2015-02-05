@@ -86,7 +86,7 @@ node_types:
                 default: ''
             download_url:
                 type: string
-                default: 'http://tarzan/builds/GigaSpacesBuilds/10.1.0/build_12592-31/xap-premium/1.5/gigaspaces-xap-premium-10.1.0-m11-b12592-31.zip'
+                default: 'http://tarzan/builds/GigaSpacesBuilds/10.1.0/build_12593-17/xap-premium/1.5/gigaspaces-xap-premium-10.1.0-m12-b12593-17.zip'
             license_key:
                 type: string
                 default: ''
@@ -341,7 +341,7 @@ node_templates:
 
 groups:
     autohealing_group:
-      members: [xap_management_vm,webui]
+      members: [xap_gateway_vm, xap_gateway]
       policies:
         simple_autoheal_policy:
           type: cloudify.policies.types.host_failure
