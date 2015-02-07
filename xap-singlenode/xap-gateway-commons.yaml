@@ -41,7 +41,7 @@ node_types:
                 default: ''
             download_url:
                 type: string
-                default: 'http://tarzan/builds/GigaSpacesBuilds/10.1.0/build_12593-17/xap-premium/1.5/gigaspaces-xap-premium-10.1.0-m12-b12593-17.zip'
+                default: 'http://www.gigaspaces.com/tempfiles/downloads/EarlyAccess/xap/10.1.0/m10/gigaspaces-xap-premium-10.1.0-m10-b12592-with-license.zip'
             license_key:
                 type: string
                 default: ''
