@@ -39,26 +39,3 @@ inputs:
         description: Comma separated list of zones
         type: string
         default: "gatewayzone"
-#    xap_gateway_spacename:
-#        description: The Space's name to be deployed on the xap_grid node (xap_grid_zones)
-#        type: string
-#        default: "myDataGrid"
-#    xap_gateway_discoport:
-#        description: aa
-#        type: integer
-#        default: 10000
-#    xap_gateway_commport:
-#        description: aa
-#        type: integer
-#        default: 10001
-#    xap_gateway_gwname:
-#        default: "SITE-A"
-#    xap_gateway_targets:
-#        description: aaa
-#        default: "['SITE-B']"
-#    xap_gateway_sources:
-#        description: aaa
-#        default: "['SITE-B']"
-#    xap_gateway_lookups:
-#        type: string
-#        default: "[['gwname':'SITE-B','address':'11.0.0.8','discoport':10000,'commport':10001]]"
