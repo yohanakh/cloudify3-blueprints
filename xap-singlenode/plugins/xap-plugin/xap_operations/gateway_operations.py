@@ -45,7 +45,7 @@ def deploy_gateway_space(**kwargs):
     my_env['NIC_ADDR'] = ip
     ctx.logger.info("Executing: %s", space_deployment_command)
     output = subprocess.check_output(space_deployment_command)
-    ctx.logger.info("YES SPACE %s", output)
+    ctx.logger.info("Finished executing, output: %s", output)
 
 
 @operation
@@ -90,7 +90,7 @@ def deploy_gateway_pu(**kwargs):
     my_env['NIC_ADDR'] = ip
     ctx.logger.info("Executing: %s", gateway_deployment_command)
     output = subprocess.check_output(gateway_deployment_command, env=my_env)
-    ctx.logger.info("YES SPACE %s", output)
+    ctx.logger.info("Finished executing, output: %s", output)
 
 
 @operation
@@ -116,4 +116,4 @@ def deploy_rest(**kwargs):
     my_env['NIC_ADDR'] = ip
     ctx.logger.info("Executing: %s", rest_deployment_command)
     output = subprocess.check_output(rest_deployment_command, env=my_env)
-    ctx.logger.info("YES SPACE %s", output)
+    ctx.logger.info("Finished executing, output: %s", output)

@@ -24,8 +24,8 @@ node_templates:
             properties:
                 security_group:
                     name: xap_security_group
-                resource_id: yohanaxap_security_group
-                use_external_resource: false
+                resource_id: xap_security_group
+                use_external_resource: True
                 rules:
                         - remote_ip_prefix: 0.0.0.0/0
                           port: 8080
@@ -64,7 +64,7 @@ node_templates:
               server:
                   image: "d81ccdfe-7482-460e-a7ce-69ea29aa129b"
                   flavor: "ba4e08fd-e4c5-4233-a906-f1bb31cb659d"
-                  security_groups: ['yohanaxap_security_group']
+                  security_groups: ['xap_security_group']
 
             relationships:
                 - target: floatingip
@@ -87,7 +87,7 @@ node_templates:
               server:
                   image: "d81ccdfe-7482-460e-a7ce-69ea29aa129b"
                   flavor: "ba4e08fd-e4c5-4233-a906-f1bb31cb659d"
-                  security_groups: ['yohanaxap_security_group']
+                  security_groups: ['xap_security_group']
             relationships:
                 - target: floatingip2
                   type: cloudify.openstack.server_connected_to_floating_ip
@@ -102,7 +102,7 @@ node_templates:
               server:
                   image: "d81ccdfe-7482-460e-a7ce-69ea29aa129b"
                   flavor: "ba4e08fd-e4c5-4233-a906-f1bb31cb659d"
-                  security_groups: ['yohanaxap_security_group']
+                  security_groups: ['xap_security_group']
             relationships:
                 - target: floatingip3
                   type: cloudify.openstack.server_connected_to_floating_ip
@@ -125,17 +125,11 @@ node_templates:
             interfaces:
                 admin.commands:
                   deploy_grid:
-                      implementation: xap_admin_plugin.xap_admin_plugin.tasks.deploy_grid
-                      inputs:
-                          script: xap-scripts/deploy-grid.sh
+                      implementation: xap_plugin.xap_operations.basic_operations.deploy_grid
                   undeploy_grid:
-                      implementation: xap_admin_plugin.xap_admin_plugin.tasks.undeploy_grid
-                      inputs:
-                          script: xap-scripts/undeploy-grid.sh
+                      implementation: xap_plugin.xap_operations.basic_operations.undeploy_grid
                   deploy_pu:
-                      implementation: xap_admin_plugin.xap_admin_plugin.tasks.deploy_pu
-                      inputs:
-                          script: xap-scripts/deploy-pu.sh
+                      implementation: xap_plugin.xap_operations.basic_operations.deploy_pu
                   deploy_gateway_space:
                       implementation: xap_plugin.xap_operations.gateway_operations.deploy_gateway_space
                   deploy_rest:

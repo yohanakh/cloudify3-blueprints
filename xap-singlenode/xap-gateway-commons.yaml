@@ -107,14 +107,9 @@ plugins:
         executor: host_agent
         source: xap-config-plugin
 
-    xap_admin_plugin:
-        executor: host_agent
-        source: xap-admin-plugin
-
     xap_plugin:
-        executor: central_deployment_agent
+        executor: host_agent
         source: xap-plugin
-        install: False
 
 
 workflows:
@@ -147,7 +142,7 @@ workflows:
           rest_zones:
             default: "restzone"
     deploy_grid:
-        mapping: workflows/deploy_grid.py
+        mapping: xap_plugin.xap_workflows.basic_workflows.deploy_grid
         parameters:
             grid_name:
               default: dataGrid
@@ -162,12 +157,12 @@ workflows:
             max_per_machine:
               default: 0
     undeploy_grid:
-        mapping: workflows/undeploy_grid.py
+        mapping: xap_plugin.xap_workflows.basic_workflows.undeploy_grid
         parameters:
             grid_name:
               default: dataGrid
     deploy_pu:
-        mapping: workflows/deploy_pu.py
+        mapping: xap_plugin.xap_workflows.basic_workflows.deploy_pu
         parameters:
             pu_url:
               default: ""

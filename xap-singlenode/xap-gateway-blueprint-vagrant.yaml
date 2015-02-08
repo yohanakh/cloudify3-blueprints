@@ -81,17 +81,11 @@ node_templates:
             interfaces:
                 admin.commands:
                   deploy_grid:
-                      implementation: xap_admin_plugin.xap_admin_plugin.tasks.deploy_grid
-                      inputs:
-                          script: xap-scripts/deploy-grid.sh
+                      implementation: xap_plugin.xap_operations.basic_operations.deploy_grid
                   undeploy_grid:
-                      implementation: xap_admin_plugin.xap_admin_plugin.tasks.undeploy_grid
-                      inputs:
-                          script: xap-scripts/undeploy-grid.sh
+                      implementation: xap_plugin.xap_operations.basic_operations.undeploy_grid
                   deploy_pu:
-                      implementation: xap_admin_plugin.xap_admin_plugin.tasks.deploy_pu
-                      inputs:
-                          script: xap-scripts/deploy-pu.sh
+                      implementation: xap_plugin.xap_operations.basic_operations.deploy_pu
                   deploy_gateway_space:
                       implementation: xap_plugin.xap_operations.gateway_operations.deploy_gateway_space
                   deploy_rest:

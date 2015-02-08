@@ -54,10 +54,12 @@ if [ ! -d $DIR/xap ]; then
   ctx logger info "license_key=${license_key}"
 
   # Update license
-  AS='s!\(.*\)\(<licensekey>\)\(.*\)\(<\/licensekey>\)\(.*\)!\1\2'$license_key'\4\5!'
-  ctx logger info "AS=$AS"
+  if [ -n "$license_key" ]; then
+    AS='s!\(.*\)\(<licensekey>\)\(.*\)\(<\/licensekey>\)\(.*\)!\1\2'$license_key'\4\5!'
+    sed -i -e "$AS" $GSDIR/gslicense.xml
+    ctx logger info "Updated license key"
+  fi
 
-  sed -i -e "$AS" $GSDIR/gslicense.xml
 
   # unzip scripts
   pushd $GSDIR/bin
