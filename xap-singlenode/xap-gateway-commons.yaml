@@ -113,7 +113,7 @@ plugins:
 
 
 workflows:
-    my_workflow:
+    deploy_space_with_gateway:
         mapping: xap_plugin.xap_workflows.gateway_workflow.start_gateway
         parameters:
           space_name:
